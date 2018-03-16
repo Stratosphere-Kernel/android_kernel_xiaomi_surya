@@ -1148,6 +1148,7 @@ static int __device_suspend_noirq(struct device *dev, pm_message_t state, bool a
 		goto Complete;
 
 	if (pm_wakeup_pending()) {
+		dev->power.direct_complete = false;
 		async_error = -EBUSY;
 		goto Complete;
 	}
