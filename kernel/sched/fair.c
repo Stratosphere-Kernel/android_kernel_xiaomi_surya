@@ -8349,6 +8349,7 @@ static int find_energy_efficient_cpu(struct sched_domain *sd,
 	int next_cpu = -1, backup_cpu = -1;
 	int boosted = (schedtune_task_boost(p) > 0 || per_task_boost(p) > 0);
 	int start_cpu;
+	bool about_to_idle = (cpu_rq(cpu)->nr_running < 2);
 
 	if (is_many_wakeup(sibling_count_hint) && prev_cpu != cpu &&
 			cpumask_test_cpu(prev_cpu, p->cpus_ptr))
@@ -8370,7 +8371,7 @@ static int find_energy_efficient_cpu(struct sched_domain *sd,
 	if (sync && (need_idle || (is_rtg && curr_is_rtg)))
 		sync = 0;
 
-	if (sysctl_sched_sync_hint_enable && sync &&
+	if (sysctl_sched_sync_hint_enable && sync && about_to_idle &&
 				bias_to_this_cpu(p, cpu, start_cpu)) {
 		target_cpu = cpu;
 		fbt_env.fastpath = SYNC_WAKEUP;
