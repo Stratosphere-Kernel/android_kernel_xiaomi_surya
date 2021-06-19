@@ -1242,7 +1242,7 @@ static int tas256x_info_profile(struct snd_kcontrol *kcontrol,
 #endif
 	uinfo->value.integer.min = -1;
 	uinfo->value.integer.max = max(-1, p_tas256x->ncfgs - 1);
-	dev_dbg(p_tas256x->dev,"%s: max profile = %d\n", __func__, uinfo->value.integer.max);
+	dev_dbg(p_tas256x->dev,"%s: max profile = %ld\n", __func__, uinfo->value.integer.max);
 	
 	return 0;
 }
@@ -1352,7 +1352,7 @@ static void tas256x_fw_ready(const struct firmware* pFW, void* pContext)
     fw_hdr->img_sz = SMS_HTONL(buf[offset], buf[offset + 1], buf[offset + 2], buf[offset + 3]);
     offset += 4;
     if (fw_hdr->img_sz != pFW->size) {
-        dev_err(pTAS256x->dev,"File size not match, %d %zu", pFW->size, fw_hdr->img_sz);
+        dev_err(pTAS256x->dev,"File size not match, %ld %u", pFW->size, fw_hdr->img_sz);
         goto EXIT;
     }
 
