@@ -3548,7 +3548,7 @@ static const struct file_operations icnss_regread_fops = {
 	.llseek         = seq_lseek,
 };
 
-#ifdef CONFIG_ICNSS_DEBUG
+#ifdef CONFIG_DEBUG_FS
 static int icnss_debugfs_create(struct icnss_priv *priv)
 {
 	int ret = 0;
@@ -3881,8 +3881,9 @@ static int icnss_probe(struct platform_device *pdev)
 
 	icnss_enable_recovery(priv);
 
+#ifdef CONFIG_DEBUG_FS
 	icnss_debugfs_create(priv);
-
+#endif
 	icnss_sysfs_create(priv);
 
 	ret = device_init_wakeup(&priv->pdev->dev, true);
