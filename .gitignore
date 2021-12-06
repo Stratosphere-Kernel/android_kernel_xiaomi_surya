@@ -41,6 +41,7 @@
 *.xz
 Module.symvers
 modules.builtin
+releasenotes.md
 
 #
 # Top-level generic files
