@@ -1,13 +1,14 @@
-* Changelog [23rd December 2021]
-* Happy Holidays everyone!
+* Changelog [22nd January 2022]
 * Upstreamed latest QuickSilveR source
-* USB-OTG Fixed
-* Upstreamed Wireguard to 202111208
-* Now compiled with LLVM-Polly optimization
-* Added support for NTFS_RW
-* Added support for exFAT-arter97
-* Added experimental support for DriveDroid
-* Removed support for Nintendo Joycons
-* Fixes for better battery backup
-* Addressed a few logspam issues.
-* Other misc optimizations
+* Backported smem, smp2p and rpmsg from Linux 5.4
+* Improved battery life through PELT code cleanup
+* Improved touch latency
+* Reduced alarmtimer wakelock suspend
+* Removed userspace CPU boosting
+* Removed sched boost & sched tune
+* Reduced CPU Thermal Throttling
+* Reduced NTP Wakeups
+* Support for Paragon NTFS-3 
+* Support for Linux Random Number Generator
+* Debloated unnecessary drivers
+* More logging cleanup
