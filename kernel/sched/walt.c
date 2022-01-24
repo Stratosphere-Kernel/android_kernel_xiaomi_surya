@@ -522,6 +522,7 @@ static inline u64 freq_policy_load(struct rq *rq)
 	struct sched_cluster *cluster = rq->cluster;
 	u64 aggr_grp_load = cluster->aggr_grp_load;
 	u64 load, tt_load = 0;
+	u64 coloc_boost_load = cluster->coloc_boost_load;
 	struct task_struct *cpu_ksoftirqd = per_cpu(ksoftirqd, cpu_of(rq));
 
 	if (rq->ed_task != NULL) {
@@ -536,7 +537,9 @@ static inline u64 freq_policy_load(struct rq *rq)
 
 	if (cpu_ksoftirqd && cpu_ksoftirqd->state == TASK_RUNNING)
 		load = max_t(u64, load, task_load(cpu_ksoftirqd));
-
+	if (coloc_boost_load)
+		load = max_t(u64, load, coloc_boost_load);
+		
 	tt_load = top_task_load(rq);
 	switch (reporting_policy) {
 	case FREQ_REPORT_MAX_CPU_LOAD_TOP_TASK:
@@ -562,11 +565,34 @@ static inline u64 freq_policy_load(struct rq *rq)
 done:
 	trace_sched_load_to_gov(rq, aggr_grp_load, tt_load, sched_freq_aggr_en,
 				load, reporting_policy, walt_rotation_enabled,
+				sysctl_sched_little_cluster_coloc_fmin_khz,
+				coloc_boost_load,
 				sysctl_sched_user_hint);
 	return load;
 }
 
-static bool rtgb_active;
+/* Set to 1GHz by default */
+unsigned int sysctl_sched_little_cluster_coloc_fmin_khz = 1000000;
+static u64 coloc_boost_load;
+
+void walt_map_freq_to_load(void)
+{
+	struct sched_cluster *cluster;
+
+	for_each_sched_cluster(cluster) {
+		if (is_min_capacity_cluster(cluster)) {
+			int fcpu = cluster_first_cpu(cluster);
+
+			coloc_boost_load = div64_u64(
+				((u64)sched_ravg_window *
+				arch_scale_cpu_capacity(NULL, fcpu) *
+				sysctl_sched_little_cluster_coloc_fmin_khz),
+				(u64)1024 * cpu_max_possible_freq(fcpu));
+			coloc_boost_load = div64_u64(coloc_boost_load << 2, 5);
+			break;
+		}
+	}
+}
 
 static inline unsigned long
 __cpu_util_freq_walt(int cpu, struct sched_walt_cpu_load *walt_load)
@@ -598,7 +624,6 @@ __cpu_util_freq_walt(int cpu, struct sched_walt_cpu_load *walt_load)
 		walt_load->nl = nl;
 		walt_load->pl = pl;
 		walt_load->ws = walt_load_reported_window;
-		walt_load->rtgb_active = rtgb_active;
 	}
 
 	return (util >= capacity) ? capacity : util;
@@ -2284,6 +2309,7 @@ static struct sched_cluster init_cluster = {
 	.max_possible_freq	=	1,
 	.exec_scale_factor	=	1024,
 	.aggr_grp_load		=	0,
+	.coloc_boost_load	=	0,
 };
 
 void init_clusters(void)
@@ -3309,26 +3335,46 @@ static void transfer_busy_time(struct rq *rq, struct related_thread_group *grp,
 	trace_sched_migration_update_sum(p, migrate_type, rq);
 }
 
-bool is_rtgb_active(void)
+bool void walt_update_coloc_boost_load(void)
 {
 	struct related_thread_group *grp;
+	struct sched_cluster *cluster;
+
+	if (sched_boost() == CONSERVATIVE_BOOST)
+		return false;
 
 	grp = lookup_related_thread_group(DEFAULT_CGROUP_COLOC_ID);
-	return grp && grp->skip_min;
+	if (!grp || !grp->preferred_cluster ||
+			is_min_capacity_cluster(grp->preferred_cluster))
+		return;
+
+	for_each_sched_cluster(cluster) {
+		if (is_min_capacity_cluster(cluster)) {
+			cluster->coloc_boost_load = coloc_boost_load;
+			break;
+		}
+	done:
+		mutex_unlock(&mutex);
+		return ret;
+	}
 }
 
-u64 get_rtgb_active_time(void)
+int sched_little_cluster_coloc_fmin_khz_handler(struct ctl_table *table,
+				int write, void __user *buffer, size_t *lenp,
+				loff_t *ppos)
 {
-	struct related_thread_group *grp;
-	u64 now = sched_clock();
+	int ret;
+	static DEFINE_MUTEX(mutex);
 
-	grp = lookup_related_thread_group(DEFAULT_CGROUP_COLOC_ID);
+	mutex_lock(&mutex);
 
-	if (grp && grp->skip_min && grp->start_ts)
-		return now - grp->start_ts;
+	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+	if (ret || !write)
+		goto done;
 
-	return 0;
+	walt_map_freq_to_load();
 }
+
 
 static void walt_init_window_dep(void);
 static void walt_tunables_fixup(void)
@@ -3383,6 +3429,7 @@ void walt_irq_work(struct irq_work *irq_work)
 
 		cluster->aggr_grp_load = aggr_grp_load;
 		total_grp_load += aggr_grp_load;
+		cluster->coloc_boost_load = 0;
 
 		if (is_min_capacity_cluster(cluster))
 			min_cluster_grp_load = aggr_grp_load;
@@ -3397,10 +3444,7 @@ void walt_irq_work(struct irq_work *irq_work)
 			for_each_cpu(cpu, &asym_cap_sibling_cpus)
 				cpu_cluster(cpu)->aggr_grp_load = big_grp_load;
 		}
-		rtgb_active = is_rtgb_active();
-	} else {
-		rtgb_active = false;
-	}
+		walt_update_coloc_boost_load();
 
 	if (!is_migration && sysctl_sched_user_hint && time_after(jiffies,
 					sched_user_hint_reset_time))

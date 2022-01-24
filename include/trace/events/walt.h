@@ -474,9 +474,13 @@ TRACE_EVENT(sched_load_to_gov,
 	TP_PROTO(struct rq *rq, u64 aggr_grp_load, u32 tt_load,
 		int freq_aggr, u64 load, int policy,
 		int big_task_rotation,
+		unsigned int sysctl_sched_little_cluster_coloc_fmin_khz,
+		u64 coloc_boost_load,
 		unsigned int user_hint),
 	TP_ARGS(rq, aggr_grp_load, tt_load, freq_aggr, load, policy,
-		big_task_rotation, user_hint),
+		big_task_rotation,sysctl_sched_little_cluster_coloc_fmin_khz,
+		coloc_boost_load,
+		user_hint),
 
 	TP_STRUCT__entry(
 		__field(	int,	cpu			)
@@ -491,6 +495,9 @@ TRACE_EVENT(sched_load_to_gov,
 		__field(	u64,	grp_nt_ps		)
 		__field(	u64,	pl			)
 		__field(	u64,    load			)
+		__field(unsigned int,
+			sysctl_sched_little_cluster_coloc_fmin_khz)
+		__field(u64,	coloc_boost_load)
 		__field(	int,    big_task_rotation	)
 		__field(unsigned int, user_hint)
 	),
@@ -509,14 +516,20 @@ TRACE_EVENT(sched_load_to_gov,
 		__entry->pl		= rq->walt_stats.pred_demands_sum_scaled;
 		__entry->load		= load;
 		__entry->big_task_rotation = big_task_rotation;
+		__entry->sysctl_sched_little_cluster_coloc_fmin_khz =
+				sysctl_sched_little_cluster_coloc_fmin_khz;
+		__entry->coloc_boost_load = coloc_boost_load;
 		__entry->user_hint = user_hint;
 	),
 
-	TP_printk("cpu=%d policy=%d ed_task_pid=%d aggr_grp_load=%llu freq_aggr=%d tt_load=%llu rq_ps=%llu grp_rq_ps=%llu nt_ps=%llu grp_nt_ps=%llu pl=%llu load=%llu big_task_rotation=%d user_hint=%u",
+	TP_printk("cpu=%d policy=%d ed_task_pid=%d aggr_grp_load=%llu freq_aggr=%d tt_load=%llu rq_ps=%llu grp_rq_ps=%llu nt_ps=%llu grp_nt_ps=%llu pl=%llu load=%llu big_task_rotation=%d sysctl_sched_little_cluster_coloc_fmin_khz=%u coloc_boost_load=%llu user_hint=%u",
 		__entry->cpu, __entry->policy, __entry->ed_task_pid,
 		__entry->aggr_grp_load, __entry->freq_aggr,
 		__entry->tt_load, __entry->rq_ps, __entry->grp_rq_ps,
 		__entry->nt_ps, __entry->grp_nt_ps, __entry->pl, __entry->load,
+		__entry->big_task_rotation,
+		__entry->sysctl_sched_little_cluster_coloc_fmin_khz,
+		__entry->coloc_boost_load)
 		__entry->big_task_rotation, __entry->user_hint)
 );
 #else

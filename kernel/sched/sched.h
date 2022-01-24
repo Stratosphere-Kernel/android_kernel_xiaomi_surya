@@ -59,7 +59,6 @@ struct sched_walt_cpu_load {
 	unsigned long prev_window_util;
 	unsigned long nl;
 	unsigned long pl;
-	bool rtgb_active;
 	u64 ws;
 };
 
@@ -107,6 +106,7 @@ struct sched_cluster {
 	unsigned int max_possible_freq;
 	bool freq_init_done;
 	u64 aggr_grp_load;
+	u64 coloc_boost_load;
 };
 #endif /* CONFIG_SCHED_WALT */
 
