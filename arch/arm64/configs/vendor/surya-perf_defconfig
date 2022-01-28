@@ -2588,7 +2588,7 @@ CONFIG_QPNP_SMB5=y
 # CONFIG_SMB1390_CHARGE_PUMP_PSY is not set
 # CONFIG_SMB1398_CHARGER is not set
 # CONFIG_SMB358_CHARGER is not set
-CONFIG_REVERSE_CHARGE=y
+# CONFIG_REVERSE_CHARGE is not set
 
 #
 # TI Technologies, Inc. Charger support
