@@ -386,7 +386,7 @@ function make_package()  {
 	printf "\n"
 	printf "\n$green Packaging Kernel! \n"
 	cp "$KERNEL_IMG" "$ANYKERNEL_DIR"
-#	cp "$KERNEL_DTB" "$ANYKERNEL_DIR"/dtb
+	cp "$KERNEL_DTB" "$ANYKERNEL_DIR"/dtb
 	cp "$KERNEL_DTBO" "$ANYKERNEL_DIR"
 	cd "$ANYKERNEL_DIR"
 	zip -r9 UPDATE-AnyKernel2.zip * -x README.md LICENSE UPDATE-AnyKernel2.zip zipsigner.jar
