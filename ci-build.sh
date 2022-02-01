@@ -23,14 +23,49 @@ export KERNEL_IMG=output/arch/arm64/boot/Image
 export KERNEL_DTBO=output/arch/arm64/boot/dtbo.img
 export KERNEL_DTB=output/arch/arm64/boot/dts/qcom/sdmmagpie.dtb
 export DEFCONFIG=vendor/surya-perf_defconfig
+export ANYKERNEL_DIR=$(pwd)/AnyKernel3/
+export TC_DIR=$(pwd)/azure/
+
+# Telegram API Stuff
+BUILD_START=$(date +"%s")
 export GITHUB_TOKEN=$TOKEN
-ANYKERNEL_DIR=$(pwd)/AnyKernel3/
+export token=$TGKEN
+KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+BOT_MSG_URL="https://api.telegram.org/bot$token/sendMessage"
+BOT_BUILD_URL="https://api.telegram.org/bot$token/sendDocument"
+CHATID=-1001719821334
+COMMIT_HEAD=$(git log --oneline -1)
 TERM=xterm
 if [ "$(cat /sys/devices/system/cpu/smt/active)" = "1" ]; then
 		export THREADS=$(expr $(nproc --all) \* 2)
 	else
 		export THREADS=$(nproc --all)
 	fi
+##---------------------------------------------------------##
+
+tg_post_msg() {
+	curl -s -X POST "$BOT_MSG_URL" -d chat_id="$CHATID" \
+	-d "disable_web_page_preview=true" \
+	-d "parse_mode=html" \
+	-d text="$1"
+
+}
+
+##----------------------------------------------------------------##
+
+tg_post_build() {
+	#Post MD5Checksum alongwith for easeness
+	MD5CHECK=$(md5sum "$1" | cut -d' ' -f1)
+
+	#Show the Checksum alongwith caption
+	curl --progress-bar -F document=@"$1" "$BOT_BUILD_URL" \
+	-F chat_id="$CHATID"  \
+	-F "disable_web_page_preview=true" \
+	-F "parse_mode=html" \
+	-F caption="$2 | <b>MD5 Checksum : </b><code>$MD5CHECK</code>"
+}
+
+##----------------------------------------------------------##
 
 # Create Release Notes
 touch releasenotes.md
@@ -50,12 +85,14 @@ cp releasenotes.md $(pwd)/Stratosphere-Canaries/
 make $DEFCONFIG -j$THREADS CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
 
 # Make Kernel
+tg_post_msg "<b> Build Started on Github Actions</b>%0A<b>Date : </b><code>$(TZ=Etc/UTC date)</code>%0A<b>Top Commit : </b><code>$COMMIT_HEAD</code>%0A"
 make -j$THREADS CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
 
 # Check if Image.gz-dtb exists. If not, stop executing.
 if ! [ -a $KERNEL_IMG ];
   then
     echo "An error has occured during compilation. Please check your code."
+    tg_post_msg "<b>An error has occured during compilation. Build has failed</b>%0A"
     exit 1
   fi 
 
@@ -67,13 +104,18 @@ cd AnyKernel3
 zip -r9 UPDATE-AnyKernel2.zip * -x README.md LICENSE UPDATE-AnyKernel2.zip zipsigner.jar
 cp UPDATE-AnyKernel2.zip package.zip
 cp UPDATE-AnyKernel2.zip Stratosphere-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER.zip
+BUILD_END=$(date +"%s")
+DIFF=$((BUILD_END - BUILD_START))
+tg_post_build "Stratosphere-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER.zip" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 
-# Upload Flashable zip to tmp.ninja
-curl -i -F files[]=@Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER".zip https://tmp.ninja/upload.php?output=text
 
-# cp Stratosphere-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER.zip ../Stratosphere-Canaries/
-# cd ../Stratosphere-Canaries/
+# Upload Flashable zip to tmp.ninja and uguu.se
+# curl -i -F files[]=@Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER".zip https://uguu.se/upload.php
+# curl -i -F files[]=@Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER".zip https://tmp.ninja/upload.php?output=text
+
+cp Stratosphere-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER.zip ../Stratosphere-Canaries/
+cd ../Stratosphere-Canaries/
 
 # Upload Flashable Zip to GitHub Releases <3
-# gh release create earlyaccess-$DATE "Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER.zip"" -F releasenotes.md -p -t "Stratosphere Kernel: Automated Build"
+gh release create earlyaccess-$DATE "Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER.zip"" -F releasenotes.md -p -t "Stratosphere Kernel: Automated Build"
 

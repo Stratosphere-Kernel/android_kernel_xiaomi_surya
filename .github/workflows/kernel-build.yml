@@ -16,9 +16,11 @@ jobs:
       - name: Build Stratosphere Kernel
         run: |
           export TOKEN=${AUTH_TOKEN}
+          export TGKEN=${TELEGRAM_TOKEN}
           bash ci-build.sh
         env:
           AUTH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          TELEGRAM_TOKEN: ${{ secrets.TG_TOKEN }}
       - name: Store Kernel Package as Artifact
         uses: actions/upload-artifact@v2
         with:
