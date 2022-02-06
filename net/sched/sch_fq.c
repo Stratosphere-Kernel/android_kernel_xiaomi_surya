@@ -92,8 +92,8 @@ struct fq_sched_data {
 	u32		quantum;
 	u32		initial_quantum;
 	u32		flow_refill_delay;
+	u32		flow_max_rate;	/* optional max rate per flow */
 	u32		flow_plimit;	/* max packets per flow */
-	unsigned long	flow_max_rate;	/* optional max rate per flow */
 	u32		orphan_mask;	/* mask for orphaned skb */
 	u32		low_rate_threshold;
 	struct rb_root	*fq_root;
@@ -464,8 +464,7 @@ static struct sk_buff *fq_dequeue(struct Qdisc *sch)
 	struct fq_flow_head *head;
 	struct sk_buff *skb;
 	struct fq_flow *f;
-	unsigned long rate;
-	u32 plen;
+	u32 rate, plen;
 
 	skb = fq_dequeue_head(sch, &q->internal);
 	if (skb)
@@ -533,11 +532,11 @@ begin:
 		if (f->credit > 0)
 			goto out;
 	}
-	if (rate != ~0UL) {
+	if (rate != ~0U) {
 		u64 len = (u64)plen * NSEC_PER_SEC;
 
 		if (likely(rate))
-			len = div64_ul(len, rate);
+			do_div(len, rate);
 		/* Since socket rate can change later,
 		 * clamp the delay to 1 second.
 		 * Really, providers of too big packets should be fixed !
@@ -749,11 +748,9 @@ static int fq_change(struct Qdisc *sch, struct nlattr *opt)
 		pr_warn_ratelimited("sch_fq: defrate %u ignored.\n",
 				    nla_get_u32(tb[TCA_FQ_FLOW_DEFAULT_RATE]));
 
-	if (tb[TCA_FQ_FLOW_MAX_RATE]) {
-		u32 rate = nla_get_u32(tb[TCA_FQ_FLOW_MAX_RATE]);
+	if (tb[TCA_FQ_FLOW_MAX_RATE])
+		q->flow_max_rate = nla_get_u32(tb[TCA_FQ_FLOW_MAX_RATE]);
 
-		q->flow_max_rate = (rate == ~0U) ? ~0UL : rate;
-	}
 	if (tb[TCA_FQ_LOW_RATE_THRESHOLD])
 		q->low_rate_threshold =
 			nla_get_u32(tb[TCA_FQ_LOW_RATE_THRESHOLD]);
@@ -815,7 +812,7 @@ static int fq_init(struct Qdisc *sch, struct nlattr *opt)
 	q->quantum		= 2 * psched_mtu(qdisc_dev(sch));
 	q->initial_quantum	= 10 * psched_mtu(qdisc_dev(sch));
 	q->flow_refill_delay	= msecs_to_jiffies(40);
-	q->flow_max_rate	= ~0UL;
+	q->flow_max_rate	= ~0U;
 	q->time_next_delayed_flow = ~0ULL;
 	q->rate_enable		= 1;
 	q->new_flows.first	= NULL;
@@ -851,8 +848,7 @@ static int fq_dump(struct Qdisc *sch, struct sk_buff *skb)
 	    nla_put_u32(skb, TCA_FQ_QUANTUM, q->quantum) ||
 	    nla_put_u32(skb, TCA_FQ_INITIAL_QUANTUM, q->initial_quantum) ||
 	    nla_put_u32(skb, TCA_FQ_RATE_ENABLE, q->rate_enable) ||
-	    nla_put_u32(skb, TCA_FQ_FLOW_MAX_RATE,
-			min_t(unsigned long, q->flow_max_rate, ~0U)) ||
+	    nla_put_u32(skb, TCA_FQ_FLOW_MAX_RATE, q->flow_max_rate) ||
 	    nla_put_u32(skb, TCA_FQ_FLOW_REFILL_DELAY,
 			jiffies_to_usecs(q->flow_refill_delay)) ||
 	    nla_put_u32(skb, TCA_FQ_ORPHAN_MASK, q->orphan_mask) ||
