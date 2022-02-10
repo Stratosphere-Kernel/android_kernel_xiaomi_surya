@@ -26,7 +26,7 @@
 #include <linux/dax.h>
 #include <linux/uio.h>
 
-#include <notrace.h>
+#include <trace/events/ext4.h>
 
 typedef struct {
 	__le32	*p;

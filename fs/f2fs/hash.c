@@ -17,7 +17,6 @@
 #include <linux/unicode.h>
 
 #include "f2fs.h"
-#include <notrace.h>
 
 /*
  * Hashing code copied from ext3

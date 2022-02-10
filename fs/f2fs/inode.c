@@ -16,7 +16,7 @@
 #include "segment.h"
 #include "xattr.h"
 
-#include <notrace.h>
+#include <trace/events/f2fs.h>
 
 void f2fs_mark_inode_dirty_sync(struct inode *inode, bool sync)
 {

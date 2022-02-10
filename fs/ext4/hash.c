@@ -14,7 +14,6 @@
 #include <linux/compiler.h>
 #include <linux/bitops.h>
 #include "ext4.h"
-#include <notrace.h>
 
 #define DELTA 0x9E3779B9
 

@@ -19,7 +19,6 @@
 #include <linux/blkdev.h>
 #include <linux/slab.h>
 #include "ext4.h"
-#include <notrace.h>
 
 struct ext4_system_zone {
 	struct rb_node	node;

@@ -13,7 +13,6 @@
 #include "f2fs.h"
 #include "xattr.h"
 #include "acl.h"
-#include <notrace.h>
 
 static inline size_t f2fs_acl_size(int count)
 {

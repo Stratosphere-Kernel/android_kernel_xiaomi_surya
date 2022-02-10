@@ -11,7 +11,6 @@
 #include "ext4_jbd2.h"
 #include "ext4.h"
 #include "xattr.h"
-#include <notrace.h>
 
 static bool
 ext4_xattr_user_list(struct dentry *dentry)

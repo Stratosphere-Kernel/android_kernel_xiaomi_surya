@@ -10,7 +10,6 @@
 
 #include <linux/buffer_head.h>
 #include "ext4.h"
-#include <notrace.h>
 
 unsigned int ext4_count_free(char *bitmap, unsigned int numchars)
 {

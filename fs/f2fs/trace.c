@@ -11,7 +11,7 @@
 #include <linux/radix-tree.h>
 
 #include "f2fs.h"
-#include <notrace.h>
+#include "trace.h"
 
 static RADIX_TREE(pids, GFP_ATOMIC);
 static spinlock_t pids_lock;

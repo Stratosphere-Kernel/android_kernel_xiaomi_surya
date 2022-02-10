@@ -29,7 +29,6 @@
 #include "ext4_jbd2.h"
 #include "xattr.h"
 #include "acl.h"
-#include <notrace.h>
 
 static struct kmem_cache *io_end_cachep;
 

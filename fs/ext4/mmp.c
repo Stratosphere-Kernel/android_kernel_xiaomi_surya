@@ -6,7 +6,6 @@
 #include <linux/kthread.h>
 
 #include "ext4.h"
-#include <notrace.h>
 
 /* Checksumming functions */
 static __le32 ext4_mmp_csum(struct super_block *sb, struct mmp_struct *mmp)

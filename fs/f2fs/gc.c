@@ -20,7 +20,7 @@
 #include "node.h"
 #include "segment.h"
 #include "gc.h"
-#include <notrace.h>
+#include <trace/events/f2fs.h>
 
 static int gc_thread_func(void *data)
 {

@@ -60,7 +60,6 @@
 #include "ext4.h"
 #include "xattr.h"
 #include "acl.h"
-#include <notrace.h>
 
 #ifdef EXT4_XATTR_DEBUG
 # define ea_idebug(inode, fmt, ...)					\

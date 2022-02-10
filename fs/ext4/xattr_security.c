@@ -11,7 +11,6 @@
 #include "ext4_jbd2.h"
 #include "ext4.h"
 #include "xattr.h"
-#include <notrace.h>
 
 static int
 ext4_xattr_security_get(const struct xattr_handler *handler,

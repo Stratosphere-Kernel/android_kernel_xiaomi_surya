@@ -20,7 +20,6 @@
 #define _EXT4_EXTENTS
 
 #include "ext4.h"
-#include <notrace.h>
 
 /*
  * With AGGRESSIVE_TEST defined, the capacity of index/leaf blocks

@@ -19,7 +19,6 @@
 #include "ext4_jbd2.h"
 #include "ext4.h"
 #include "ext4_extents.h"
-#include <notrace.h>
 
 /**
  * get_ext_path - Find an extent path for designated logical block number.

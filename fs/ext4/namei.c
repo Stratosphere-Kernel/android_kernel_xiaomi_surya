@@ -42,7 +42,7 @@
 #include "xattr.h"
 #include "acl.h"
 
-#include <notrace.h>
+#include <trace/events/ext4.h>
 /*
  * define how far ahead to read directories while searching them.
  */
