@@ -203,7 +203,6 @@ __read_mostly unsigned int sysctl_sched_prefer_spread;
 unsigned int sched_task_filter_util = 35;
 #endif
 static unsigned int __maybe_unused sched_small_task_threshold = 102;
-__read_mostly unsigned int sysctl_sched_force_lb_enable = 1;
 
 static inline void update_load_add(struct load_weight *lw, unsigned long inc)
 {
