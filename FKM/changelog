@@ -1,14 +1,12 @@
-* Changelog [22nd January 2022]
-* Upstreamed latest QuickSilveR source
-* Backported smem, smp2p and rpmsg from Linux 5.4
-* Improved battery life through PELT code cleanup
-* Improved touch latency
-* Reduced alarmtimer wakelock suspend
-* Removed userspace CPU boosting
-* Removed sched boost & sched tune
-* Reduced CPU Thermal Throttling
-* Reduced NTP Wakeups
-* Support for Paragon NTFS-3 
-* Support for Linux Random Number Generator
-* Debloated unnecessary drivers
-* More logging cleanup
+* Changelog [4th March 2022]
+* Merge tag 'LA.UM.9.1.r1-11600-SMxxx0.0'
+* Fixed Perfomance regressions
+* Fixed power button camera popup bug
+* Upstreamed F2FS
+* Reduced idle drain from problematic patches
+* Implemented LZO-RLE, ZSTD Compression Algorithms
+* Backported zRAM patches
+* Now uses zSTD as default zRAM compressor
+* Set BBRv2 as default TCP Congestion Algorithm
+* TCP Backports
+* Addressed more logspam
