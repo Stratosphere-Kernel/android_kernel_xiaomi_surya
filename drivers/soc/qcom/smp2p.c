@@ -2,7 +2,6 @@
 /*
  * Copyright (c) 2015, Sony Mobile Communications AB.
  * Copyright (c) 2012-2013, 2018-2020 The Linux Foundation. All rights reserved.
-<<<<<<< HEAD
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -12,8 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
-=======
->>>>>>> 460cb8ef9d (soc: qcom: Checkout smem and smp2p from v5.4)
  */
 
 #include <linux/interrupt.h>
