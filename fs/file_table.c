@@ -397,7 +397,6 @@ void flush_delayed_fput(void)
 
 static DECLARE_DELAYED_WORK(delayed_fput_work, delayed_fput);
 
-<<<<<<< HEAD
 void flush_delayed_fput_wait(void)
 {
 	delayed_fput(NULL);
