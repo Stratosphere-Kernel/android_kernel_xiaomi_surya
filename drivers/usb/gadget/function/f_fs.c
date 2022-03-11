@@ -2070,7 +2070,6 @@ static void ffs_func_eps_disable(struct ffs_function *func)
 	struct ffs_data *ffs      = func->ffs;
 	struct ffs_epfile *epfile = func->ffs->epfiles;
 	unsigned count            = func->ffs->eps_count;
-	struct ffs_epfile *epfile;
 	unsigned long flags;
 
 	ffs_log("enter: state %d setup_state %d flag %lu", func->ffs->state,
