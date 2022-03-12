@@ -18,6 +18,7 @@ export CROSS_COMPILE=aarch64-linux-gnu-
 export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 export LD_LIBRARY_PATH=$TC_DIR/lib
 export KBUILD_BUILD_USER="taalojarvi"
+export KBUILD_BUILD_HOST="Github Actions CI"
 export USE_HOST_LEX=yes
 export KERNEL_IMG=output/arch/arm64/boot/Image
 export KERNEL_DTBO=output/arch/arm64/boot/dtbo.img
