@@ -60,6 +60,18 @@
 #define TAS256X_IVSENSER_DISABLE 0
 /* #define TAS2558_CODEC */
 
+#undef dev_err
+#define dev_err(x, ...)
+#undef dev_info
+#define dev_info(x, ...)
+#undef dev_dbg
+#define dev_dbg(x, ...)
+#undef pr_info
+#define pr_info(x, ...)
+#undef pr_debug
+#define pr_debug(x, ...)
+#undef pr_err
+#define pr_err(x, ...)
 
 static char const *iv_enable_text[] = {"Off", "On"};
 
