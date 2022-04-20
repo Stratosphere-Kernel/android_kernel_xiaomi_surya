@@ -6,6 +6,11 @@ git clone --depth 1 https://gitlab.com/Panchajanya1999/azure-clang.git azure
 git clone --depth 1 -b surya https://github.com/taalojarvi/AnyKernel3
 git clone --depth 1 https://github.com/Stratosphere-Kernel/Stratosphere-Canaries
 
+# Workaround for safe.directory permission fix
+git config --global safe.directory "$GITHUB_WORKSPACE"
+git config --global safe.directory /github/workspace
+git config --global --add safe.directory /__w/android_kernel_xiaomi_surya/android_kernel_xiaomi_surya
+
 # Export Environment Variables. 
 export DATE=$(date +"%d-%m-%Y-%I-%M")
 export PATH="$(pwd)/azure/bin:$PATH"
