@@ -62,8 +62,8 @@ tg_post_build() {
 	curl --progress-bar -F document=@"$1" "$BOT_BUILD_URL" \
 	-F chat_id="$CHATID"  \
 	-F "disable_web_page_preview=true" \
-	-F "parse_mode=html" \
-	-F caption="$2 | <b>MD5 Checksum : </b><code>$MD5CHECK</code>"
+	-F "parse_mode=Markdown" \
+	-F caption="$2 | *MD5 Checksum : *\`$MD5CHECK\`"
 }
 
 ##----------------------------------------------------------##
