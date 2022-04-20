@@ -10,7 +10,7 @@ jobs:
     container:
       image: panchajanya1999/archlinux:latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup env
         run: pacman -Syu --needed --noconfirm wget base-devel xmlto inetutils bc cpio python-sphinx python-sphinx_rtd_theme graphviz imagemagick git python2 python zip github-cli
       - name: Build Stratosphere Kernel
@@ -22,7 +22,7 @@ jobs:
           AUTH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           TELEGRAM_TOKEN: ${{ secrets.TG_TOKEN }}
       - name: Store Kernel Package as Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
          name: Flashable zip
          path: AnyKernel3/package.zip
