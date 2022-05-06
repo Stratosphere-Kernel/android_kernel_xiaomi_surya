@@ -745,6 +745,8 @@ config LLVM_POLLY
 	  compiled with Polly support.
 
 config GCC_GRAPHITE
+	default y if CC_IS_GCC
+	default n if CC_IS_CLANG
 	bool "Enables GCC's Graphite Optimizations"
 	help
 	  This option enables GCC's Graphite Optimizations.
