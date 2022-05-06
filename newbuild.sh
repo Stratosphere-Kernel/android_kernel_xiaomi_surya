@@ -56,15 +56,15 @@ KERNEL_DTB=$OUTPUT/arch/arm64/boot/dts/qcom/sdmmagpie.dtb
 
 
 # Export Environment Variables. 
-export PATH="$TC_DIR/bin:$PATH"
+# export PATH="$TC_DIR/bin:$PATH"
 # export PATH="$TC_DIR/bin:$HOME/gcc-arm/bin${PATH}"
 export CLANG_TRIPLE=aarch64-linux-gnu-
 export ARCH=arm64
-# export CROSS_COMPILE=~/gcc-arm64/bin/aarch64-elf-
-# export CROSS_COMPILE_ARM32=~/gcc-arm/bin/arm-eabi-
-export CROSS_COMPILE=aarch64-linux-gnu-
-export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
-export LD_LIBRARY_PATH=$TC_DIR/lib
+export CROSS_COMPILE=~/gcc-arm64/bin/aarch64-elf-
+export CROSS_COMPILE_ARM32=~/gcc-arm/bin/arm-eabi-
+# export CROSS_COMPILE=aarch64-linux-gnu-
+# export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+# export LD_LIBRARY_PATH=$TC_DIR/lib
 # Need not be edited.
 export KBUILD_BUILD_USER=$USER
 export KBUILD_BUILD_HOST=$(hostname)
@@ -361,16 +361,16 @@ function make_releasenotes()  {
 # Make defconfig
 function make_defconfig()  {
 	echo -e " "
-#	make $DEFCONFIG LD=aarch64-elf-ld.lld O=$OUTPUT 2>&1 | tee -a "$LOG_DIR"/"$LOG"
-	make $DEFCONFIG CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT"
+	make $DEFCONFIG LD=aarch64-elf-ld.lld O=$OUTPUT
+#	make $DEFCONFIG CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT"
 }
 
 # Make Kernel
 function make_kernel  {
 	echo -e " "
 	COMPILE_START=$(date +"%s")
-#	make -j$THREADS LD=ld.lld O=$OUTPUT 2>&1 | tee -a "$LOG_DIR"/"$LOG"
-	make -j"$THREADS" CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT" 2>&1 | tee -a "$LOG_DIR"/"$LOG"
+	make -j$THREADS LD=ld.lld O=$OUTPUT
+#	make -j"$THREADS" CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT" 2>&1 | tee -a "$LOG_DIR"/"$LOG"
 # Check if Image.gz-dtb exists. If not, stop executing.
 	if ! [ -a "$KERNEL_IMG" ];
  		then
@@ -411,10 +411,10 @@ function make_cleanup()  {
 	echo -e "$cyan    Cleaning out build artifacts. Please wait       "
 	echo -e "$DIVIDER"
 	echo -e " "
-#	make clean LD=ld.lld O=$OUTPUT 2>&1 | tee -a "$LOG_DIR"/"$LOG"
-#	make mrproper LD=ld.lld O=$OUTPUT 2>&1 | tee -a "$LOG_DIR"/"$LOG"
-	make clean -j$THREADS CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT" 
-	make mrproper -j$THREADS CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT"
+	make clean LD=ld.lld O=$OUTPUT
+	make mrproper LD=ld.lld O=$OUTPUT
+#	make clean -j$THREADS CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT" 
+#	make mrproper -j$THREADS CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT"
 }
 
 # Check for Script Artifacts from previous builds
@@ -453,8 +453,8 @@ function update_repo()  {
 # Open Menuconfig
 function make_menuconfig()  {
 	echo -e " "
-	make nconfig CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT"
-	# make menuconfig LD=ld.lld O=$OUTPUT 2>&1 | tee -a "$LOG_DIR"/"$LOG"
+#	make nconfig CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT"
+	 make menuconfig LD=ld.lld O=$OUTPUT
 }
 
 # Clear CCACHE
