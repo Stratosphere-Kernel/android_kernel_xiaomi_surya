@@ -42,7 +42,7 @@ BASE_DIR=$HOME
 KERNEL_DIR=$(pwd)
 ANYKERNEL_DIR=$BASE_DIR/AnyKernel3
 UPLOAD_DIR=$BASE_DIR/Stratosphere-Canaries
-TC_DIR=$BASE_DIR/azure-clang
+TC_DIR=$BASE_DIR/gcc-arm64
 LOG_DIR=$BASE_DIR/logs
 CONFIG_DIR=$BASE_DIR/configs
 
@@ -57,7 +57,7 @@ KERNEL_DTB=$OUTPUT/arch/arm64/boot/dts/qcom/sdmmagpie.dtb
 
 # Export Environment Variables. 
 # export PATH="$TC_DIR/bin:$PATH"
-# export PATH="$TC_DIR/bin:$HOME/gcc-arm/bin${PATH}"
+export PATH="$TC_DIR/bin:$HOME/gcc-arm/bin${PATH}"
 export CLANG_TRIPLE=aarch64-linux-gnu-
 export ARCH=arm64
 export CROSS_COMPILE=~/gcc-arm64/bin/aarch64-elf-
