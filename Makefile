@@ -740,6 +740,19 @@ endif
 ifeq ($(cc-name),clang)
 KBUILD_CFLAGS	+= -mcpu=cortex-a76 -mtune=cortex-a76
 
+ifdef CONFIG_GCC_GRAPHITE
+GRAPHITE_FLAGS	+= -floop-block \
+			 -ftree-vectorize \
+			 -floop-strip-mine \
+			 -floop-interchange \
+			 -fgraphite-identity \
+			 -floop-nest-optimize \
+			 -ftree-loop-distribution
+
+OPT_FLAGS	+= $(GRAPHITE_FLAGS)
+KBUILD_LDFLAGS	+= $(GRAPHITE_FLAGS)
+endif
+
 ifdef CONFIG_LLVM_POLLY
 KBUILD_CFLAGS	+= -mllvm -polly \
 		   -mllvm -polly-run-dce \

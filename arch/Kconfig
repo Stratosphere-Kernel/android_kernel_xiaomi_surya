@@ -744,6 +744,14 @@ config LLVM_POLLY
 	  maximum cache locality. This requires an LLVM toolchain explicitly
 	  compiled with Polly support.
 
+config GCC_GRAPHITE
+	bool "Enables GCC's Graphite Optimizations"
+	help
+	  This option enables GCC's Graphite Optimizations.
+	  GCC with Graphite enabled is able to optimize various loops
+	  throughout the kernel. This requires an GCC to be explicitly
+	  compiled with Graphite support.
+	  
 config HAVE_ARCH_WITHIN_STACK_FRAMES
 	bool
 	help
