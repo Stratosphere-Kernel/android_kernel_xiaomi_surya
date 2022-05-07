@@ -2,7 +2,10 @@
 
 
 # Clone the repositories
-git clone --depth 1 https://gitlab.com/Panchajanya1999/azure-clang.git azure
+# git clone --depth 1 https://gitlab.com/Panchajanya1999/azure-clang.git azure
+git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm64.git gcc-arm64
+git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm.git gcc-arm
+
 git clone --depth 1 -b surya https://github.com/taalojarvi/AnyKernel3
 git clone --depth 1 https://github.com/Stratosphere-Kernel/Stratosphere-Canaries
 
@@ -13,15 +16,15 @@ git config --global --add safe.directory /__w/android_kernel_xiaomi_surya/androi
 
 # Export Environment Variables. 
 export DATE=$(date +"%d-%m-%Y-%I-%M")
-export PATH="$(pwd)/azure/bin:$PATH"
+export PATH="$(pwd)/gcc-arm64/bin:$PATH"
 # export PATH="$TC_DIR/bin:$HOME/gcc-arm/bin${PATH}"
-export CLANG_TRIPLE=aarch64-linux-gnu-
+# export CLANG_TRIPLE=aarch64-linux-gnu-
 export ARCH=arm64
-# export CROSS_COMPILE=~/gcc-arm64/bin/aarch64-elf-
-# export CROSS_COMPILE_ARM32=~/gcc-arm/bin/arm-eabi-
-export CROSS_COMPILE=aarch64-linux-gnu-
-export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
-export LD_LIBRARY_PATH=$TC_DIR/lib
+export CROSS_COMPILE=$(pwd)/gcc-arm64/bin/aarch64-elf-
+export CROSS_COMPILE_ARM32=$(pwd)/gcc-arm/bin/arm-eabi-
+# export CROSS_COMPILE=aarch64-linux-gnu-
+# export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+# export LD_LIBRARY_PATH=$TC_DIR/lib
 export KBUILD_BUILD_USER="taalojarvi"
 export KBUILD_BUILD_HOST="Github Actions CI"
 export USE_HOST_LEX=yes
@@ -30,7 +33,8 @@ export KERNEL_DTBO=output/arch/arm64/boot/dtbo.img
 export KERNEL_DTB=output/arch/arm64/boot/dts/qcom/sdmmagpie.dtb
 export DEFCONFIG=vendor/surya-perf_defconfig
 export ANYKERNEL_DIR=$(pwd)/AnyKernel3/
-export TC_DIR=$(pwd)/azure/
+# export TC_DIR=$(pwd)/azure/
+export TC_DIR=$(pwd)/gcc-arm64/
 
 # Telegram API Stuff
 BUILD_START=$(date +"%s")
@@ -88,11 +92,13 @@ git log --decorate=auto --pretty=reference --graph -n 10 >> releasenotes.md
 cp releasenotes.md $(pwd)/Stratosphere-Canaries/
 
 # Make defconfig
-make $DEFCONFIG -j$THREADS CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
+make $DEFCONFIG LD=aarch64-elf-ld.lld O=output/
+# make $DEFCONFIG -j$THREADS CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
 
 # Make Kernel
 tg_post_msg "<b> Build Started on Github Actions</b>%0A<b>Build Number: </b><code>"$GITHUB_RUN_NUMBER"</code>%0A<b>Date : </b><code>$(TZ=Etc/UTC date)</code>%0A<b>Top Commit : </b><code>$COMMIT_HEAD</code>%0A"
-make -j$THREADS CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
+make -j$THREADS LD=ld.lld O=output/
+# make -j$THREADS CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
 
 # Check if Image.gz-dtb exists. If not, stop executing.
 if ! [ -a $KERNEL_IMG ];
