@@ -72,8 +72,10 @@ export KBUILD_BUILD_HOST=$(hostname)
 export USE_HOST_LEX=yes
 export USE_CCACHE=1
 export CCACHE_EXEC=$(command -v ccache)
+
+# Check if SMT is active and set job threads accordingly
 if [ "$(cat /sys/devices/system/cpu/smt/active)" = "1" ]; then
-		export THREADS=$(expr $(nproc --all) \* 2)
+		export THREADS=$(($(nproc --all) * 2))
 	else
 		export THREADS=$(nproc --all)
 	fi
@@ -187,7 +189,7 @@ function toggle_prefs {
 	printf "\n$yellow Awaiting User Input: $red"
 	read toggle
 	case $toggle in
-		1) if [ $PREFS_PACKAGING = true ]; then
+		1) if [ "$PREFS_PACKAGING" = true ]; then
 			sed -i "s/true/false/" "$CONFIG_DIR"/pref.packaging
 			export PREFS_PACKAGING=$(cat "$CONFIG_DIR"/pref.packaging)
 			sed -i "s/true/false/" "$CONFIG_DIR"/pref.release
@@ -198,7 +200,7 @@ function toggle_prefs {
 		   fi
 		   toggle_prefs
 		   ;;
-		2) if [ $PREFS_RAMDISK = true ]; then
+		2) if [ "$PREFS_RAMDISK" = true ]; then
 			sed -i "s/true/false/" "$CONFIG_DIR"/pref.ramdisk
 			export PREFS_RAMDISK=$(cat "$CONFIG_DIR"/pref.ramdisk)
 		   else
@@ -207,7 +209,7 @@ function toggle_prefs {
 		   fi
 		   toggle_prefs
 		   ;;
-		3) if [ $PREFS_UPDATEREPO = true ]; then
+		3) if [ "$PREFS_UPDATEREPO" = true ]; then
 			sed -i "s/true/false/" "$CONFIG_DIR"/pref.updaterepo
 			export PREFS_UPDATEREPO=$(cat "$CONFIG_DIR"/pref.updaterepo)
 		   else
@@ -216,7 +218,7 @@ function toggle_prefs {
 		   fi
 		   toggle_prefs
 		   ;;
-		4) if [ $PREFS_RELEASE = true ]; then
+		4) if [ "$PREFS_RELEASE" = true ]; then
 			sed -i "s/true/false/" "$CONFIG_DIR"/pref.release
 			export PREFS_RELEASE=$(cat "$CONFIG_DIR"/pref.release)
 		   else
@@ -228,7 +230,7 @@ function toggle_prefs {
 		   fi
 		   toggle_prefs
 		   ;;
-		5) if [ $PREFS_BUILDTYPE = clean ]; then
+		5) if [ "$PREFS_BUILDTYPE" = clean ]; then
 			sed -i "s/clean/dirty/" "$CONFIG_DIR"/pref.buildtype
 			export PREFS_BUILDTYPE=$(cat "$CONFIG_DIR"/pref.buildtype)
 		   else
@@ -334,9 +336,7 @@ function preflight() {
 	printf "\n"
 	
 	printf "$cyan Generating Hash for Buildscript $nocol\n"
-	rm "$CONFIG_DIR"/kscript.hash
-	touch "$CONFIG_DIR"/kscript.hash
-	md5sum $(pwd)/"$0" >> "$CONFIG_DIR"/kscript.hash
+	md5sum "$(pwd)/"$0"" > "$CONFIG_DIR"/kscript.hash
 }
 # Create Release Notes
 function make_releasenotes()  {
@@ -344,14 +344,9 @@ function make_releasenotes()  {
 	echo -e "#earlyaccess" > releasenotes.md
 	echo -e >> releasenotes.md
 	echo -e "This is an Early Access Build of "$KERNEL_NAME" Kernel. Flash at your own risk!" >> releasenotes.md
-	COMPILE_END=$(("$SECONDS"%3600/60))
-#	CDIFF=$(($COMPILE_END - $COMPILE_START))
-#	export COMPILE_END=$( "$(SECONDS)" % 3600)/60
-#	printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60)) >> releasenotes.md
 	BUILD_END=$(date +"%s")
 	DIFF=$(($BUILD_END - $BUILD_START))
 	echo -e "Build completed after $((DIFF/60)) minute(s)" >> releasenotes.md
-# 	echo -e "Build completed after ""$COMPILE_END"" minutes on "$KBUILD_BUILD_HOST"" >>releasenotes.md
 	echo -e "Build Date: ""$TIMESTAMP" >> releasenotes.md
 	echo -e >> releasenotes.md
 	echo -e "Last 5 Commits before Build:-" >> releasenotes.md
@@ -362,15 +357,14 @@ function make_releasenotes()  {
 # Make defconfig
 function make_defconfig()  {
 	echo -e " "
-	make $DEFCONFIG LD=aarch64-elf-ld.lld O=$OUTPUT
+	make $DEFCONFIG LD=aarch64-elf-ld.lld O="$OUTPUT"
 #	make $DEFCONFIG CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT"
 }
 
 # Make Kernel
 function make_kernel  {
 	echo -e " "
-	COMPILE_START=$(date +"%s")
-	make -j$THREADS LD=ld.lld O=$OUTPUT
+	make -j"$THREADS" LD=ld.lld O="$OUTPUT"
 #	make -j"$THREADS" CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT" 2>&1 | tee -a "$LOG_DIR"/"$LOG"
 # Check if Image.gz-dtb exists. If not, stop executing.
 	if ! [ -a "$KERNEL_IMG" ];
@@ -389,21 +383,21 @@ function make_package()  {
 	cp "$KERNEL_IMG" "$ANYKERNEL_DIR"
 	cp "$KERNEL_DTB" "$ANYKERNEL_DIR"/dtb
 	cp "$KERNEL_DTBO" "$ANYKERNEL_DIR"
-	cd "$ANYKERNEL_DIR"
+	cd "$ANYKERNEL_DIR" || exit
 	zip -r9 UPDATE-AnyKernel2.zip * -x README.md LICENSE UPDATE-AnyKernel2.zip zipsigner.jar
 	java -jar zipsigner.jar UPDATE-AnyKernel2.zip UPDATE-AnyKernel2-signed.zip
 	mv UPDATE-AnyKernel2-signed.zip "$FINAL_ZIP"
 	cp "$FINAL_ZIP" "$UPLOAD_DIR"
-	cd "$KERNEL_DIR"
+	cd "$KERNEL_DIR" || exit
 }
 
 # Upload Flashable Zip to GitHub Releases <3
 function release()  {
 	printf "\n"
 	printf "\n$red Releasing Kernel Package to Github! \n"
-	cd "$UPLOAD_DIR"
+	cd "$UPLOAD_DIR" || exit
 	gh release create "$RELEASE_TAG" "$FINAL_ZIP" -F releasenotes.md -p -t "$RELEASE_MSG"
-	cd "$KERNEL_DIR"
+	cd "$KERNEL_DIR" || exit
 }
 
 # Make Clean
@@ -412,8 +406,8 @@ function make_cleanup()  {
 	echo -e "$cyan    Cleaning out build artifacts. Please wait       "
 	echo -e "$DIVIDER"
 	echo -e " "
-	make clean LD=ld.lld O=$OUTPUT
-	make mrproper LD=ld.lld O=$OUTPUT
+	make clean LD=ld.lld O="$OUTPUT"
+	make mrproper LD=ld.lld O="$OUTPUT"
 #	make clean -j$THREADS CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT" 
 #	make mrproper -j$THREADS CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT"
 }
@@ -444,25 +438,25 @@ function artifact_check()  {
 function update_repo()  {
 	echo -e " "
 	if [ -d "$TC_DIR_32" ]; then
-		cd "$TC_DIR_32"
+		cd "$TC_DIR_32" || exit
 		git pull origin --ff-only
-		cd "$TC_DIR"
+		cd "$TC_DIR" || exit
 		git pull origin --ff-only
 	else
-		cd "$TC_DIR"
+		cd "$TC_DIR" || exit
 		git pull origin --ff-only
 	fi
-	cd "$ANYKERNEL_DIR"
+	cd "$ANYKERNEL_DIR" || exit
 	git pull https://github.com/osm0sis/AnyKernel3 master
 	git push
-	cd "$KERNEL_DIR"
+	cd "$KERNEL_DIR" || exit
 }
 
 # Open Menuconfig
 function make_menuconfig()  {
 	echo -e " "
 #	make nconfig CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT"
-	 make menuconfig LD=ld.lld O=$OUTPUT
+	 make menuconfig LD=ld.lld O="$OUTPUT"
 }
 
 # Clear CCACHE
@@ -613,14 +607,18 @@ function debug_menu()  {
 	 esac
 	
 }
+
+# Capture logs from terminal
 printf "\n" | tee -a "$LOG_DIR"/"$LOG"
-printf "Script started on "$DATE"\n" | tee -a "$LOG_DIR"/"$LOG"
+printf "Script started on ""$DATE""\n" | tee -a "$LOG_DIR"/"$LOG"
 printf "\n" | tee -a "$LOG_DIR"/"$LOG"
+
 load_prefs
 check_hash
 menu
+
+# Sanitize logs
 sed -i 's/\x1b\[[0-9;]*[a-zA-Z]//g' "$LOG_DIR"/"$LOG"
 BUILD_END=$(date +"%s")
 DIFF=$(($BUILD_END - $BUILD_START))
 echo -e "Script execution completed after $((DIFF/60)) minute(s) and $((DIFF % 60)) seconds"
-
