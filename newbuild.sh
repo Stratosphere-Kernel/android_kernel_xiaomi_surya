@@ -43,6 +43,7 @@ KERNEL_DIR=$(pwd)
 ANYKERNEL_DIR=$BASE_DIR/AnyKernel3
 UPLOAD_DIR=$BASE_DIR/Stratosphere-Canaries
 TC_DIR=$BASE_DIR/gcc-arm64
+TC_DIR_32=$BASE_DIR/gcc-arm
 LOG_DIR=$BASE_DIR/logs
 CONFIG_DIR=$BASE_DIR/configs
 
@@ -57,7 +58,7 @@ KERNEL_DTB=$OUTPUT/arch/arm64/boot/dts/qcom/sdmmagpie.dtb
 
 # Export Environment Variables. 
 # export PATH="$TC_DIR/bin:$PATH"
-export PATH="$TC_DIR/bin:$HOME/gcc-arm/bin${PATH}"
+export PATH="$TC_DIR/bin:$TC_DIR_32/bin${PATH}"
 export CLANG_TRIPLE=aarch64-linux-gnu-
 export ARCH=arm64
 export CROSS_COMPILE=~/gcc-arm64/bin/aarch64-elf-
@@ -442,8 +443,15 @@ function artifact_check()  {
 # Update Toolchain Repository
 function update_repo()  {
 	echo -e " "
-	cd "$TC_DIR"
-	git pull origin --ff-only
+	if [ -d "$TC_DIR_32" ]; then
+		cd "$TC_DIR_32"
+		git pull origin --ff-only
+		cd "$TC_DIR"
+		git pull origin --ff-only
+	else
+		cd "$TC_DIR"
+		git pull origin --ff-only
+	fi
 	cd "$ANYKERNEL_DIR"
 	git pull https://github.com/osm0sis/AnyKernel3 master
 	git push
