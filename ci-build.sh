@@ -47,7 +47,7 @@ CHATID=-1001719821334
 COMMIT_HEAD=$(git log --oneline -1)
 TERM=xterm
 if [ "$(cat /sys/devices/system/cpu/smt/active)" = "1" ]; then
-		export THREADS=$(expr $(nproc --all) \* 2)
+		export THREADS=$(($(nproc --all) * 2))
 	else
 		export THREADS=$(nproc --all)
 	fi
