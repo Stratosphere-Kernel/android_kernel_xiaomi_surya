@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# SPDX-License-Identifier: Apache-2.0
+# Automation script for Building Kernels on Github Actions
 
 # Clone the repositories
 # git clone --depth 1 https://gitlab.com/Panchajanya1999/azure-clang.git azure

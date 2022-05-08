@@ -1,13 +1,6 @@
 #!/bin/bash
-# 
+# SPDX-License-Identifier: Apache-2.0
 # Odds and Ends for Android Kernel Building 
-# Copyright 2022 Karthik Sreedevan <taalojarvi@github.com>
-# Portions Copyright Aayush Gupta <TheImpulson@github.com>
-# Based on @TheImpulson's FireKernel Buildscript with a few additions and fixes of my own
-#
-# If you modify this script to suit  your needs, add your authorship info in the following format
-# Portions Copyight <YEAR> <NAME> <EMAIL>
-#
 export SECONDS=0
 export TZ=Etc/UTC
 BUILD_START=$(date +"%s")
