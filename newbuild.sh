@@ -373,9 +373,7 @@ function make_kernel  {
 function make_package()  {
 	printf "\n"
 	printf "\n$green Packaging Kernel! \n"
-	cp "$KERNEL_IMG" "$ANYKERNEL_DIR"
-	cp "$KERNEL_DTB" "$ANYKERNEL_DIR"/dtb
-	cp "$KERNEL_DTBO" "$ANYKERNEL_DIR"
+	cp "$KERNEL_IMG" "$ANYKERNEL_DIR" & cp "$KERNEL_DTB" "$ANYKERNEL_DIR"/dtb & cp "$KERNEL_DTBO" "$ANYKERNEL_DIR" && wait
 	cd "$ANYKERNEL_DIR" || exit
 	zip -r9 UPDATE-AnyKernel2.zip * -x README.md LICENSE UPDATE-AnyKernel2.zip zipsigner.jar
 	java -jar zipsigner.jar UPDATE-AnyKernel2.zip UPDATE-AnyKernel2-signed.zip
@@ -395,10 +393,6 @@ function release()  {
 
 # Make Clean
 function make_cleanup()  {
-	echo -e "$DIVIDER"
-	echo -e "$cyan    Cleaning out build artifacts. Please wait       "
-	echo -e "$DIVIDER"
-	echo -e " "
 	make clean LD=ld.lld O="$OUTPUT"
 	make mrproper LD=ld.lld O="$OUTPUT"
 #	make clean -j$THREADS CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O="$OUTPUT" 
@@ -430,18 +424,15 @@ function artifact_check()  {
 # Update Toolchain Repository
 function update_repo()  {
 	echo -e " "
+	printf "\n$cyan Updating local repositories. Please wait\n$cyan"
 	if [ -d "$TC_DIR_32" ]; then
-		cd "$TC_DIR_32" || exit
-		git pull origin --ff-only
-		cd "$TC_DIR" || exit
-		git pull origin --ff-only
+		cd "$TC_DIR_32" && git pull origin --ff-only & cd "$TC_DIR" && git pull origin --ff-only & cd "$ANYKERNEL_DIR" && git pull https://github.com/osm0sis/AnyKernel3 master 
+		git push
 	else
-		cd "$TC_DIR" || exit
-		git pull origin --ff-only
+		cd "$TC_DIR" && git pull origin --ff-only & cd "$ANYKERNEL_DIR" && git pull https://github.com/osm0sis/AnyKernel3 master 
+		git push
 	fi
-	cd "$ANYKERNEL_DIR" || exit
-	git pull https://github.com/osm0sis/AnyKernel3 master
-	git push
+	
 	cd "$KERNEL_DIR" || exit
 }
 
@@ -491,11 +482,15 @@ function menu()  {
 		   	printf "\n$red Skipping Repo Updation\n$cyan"
 		   fi
 		   if [ "$PREFS_BUILDTYPE" = "clean" ]; then
-		   	make_cleanup
+		   	echo -e "$DIVIDER"
+			echo -e "$cyan    Cleaning out build artifacts. Please wait       "
+			echo -e "$DIVIDER"
+			echo -e " "
+		   	make_cleanup & artifact_check && wait
 		   else
+		   	artifact_check
 		   	printf "\n$red Skipping Cleanup$cyan"
-		   fi
-		   artifact_check
+		   fi	   
 		   make_defconfig
 	 	   make_kernel
 	 	   if [ "$PREFS_RELEASE" = "true" ]; then
@@ -521,8 +516,7 @@ function menu()  {
 	 	   make_menuconfig
 	 	   menu
 	 	   ;;
-	 	3) make_cleanup
-	 	   artifact_check
+	 	3) make_cleanup & artifact_check && wait
 	 	   menu
 	 	   ;;
 	 	4) echo -e "$DIVIDER"
