@@ -17,7 +17,7 @@ git config --global --add safe.directory /__w/android_kernel_xiaomi_surya/androi
 
 # Export Environment Variables. 
 export DATE=$(date +"%d-%m-%Y-%I-%M")
-export PATH="$(pwd)/$TC_DIR/bin:$PATH"
+export PATH="$(pwd)/azure/bin:$PATH"
 # export PATH="$TC_DIR/bin:$HOME/gcc-arm/bin${PATH}"
 export CLANG_TRIPLE=aarch64-linux-gnu-
 export ARCH=arm64
@@ -34,8 +34,6 @@ export KERNEL_DTBO=output/arch/arm64/boot/dtbo.img
 export KERNEL_DTB=output/arch/arm64/boot/dts/qcom/sdmmagpie.dtb
 export DEFCONFIG=vendor/surya-perf_defconfig
 export ANYKERNEL_DIR=$(pwd)/AnyKernel3/
-export TC_DIR=$(pwd)/azure/
-# export TC_DIR=$(pwd)/gcc-arm64/
 
 # Telegram API Stuff
 BUILD_START=$(date +"%s")
