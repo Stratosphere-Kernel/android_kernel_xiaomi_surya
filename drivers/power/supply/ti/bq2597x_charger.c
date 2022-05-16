@@ -2280,7 +2280,7 @@ static int bq_charger_int(struct bq2597x *chip)
 	return 0;
 }
 
-
+#if 0
 static int get_charge_awake_state(struct bq2597x *bq)
 {
 	int ret;
@@ -2304,7 +2304,7 @@ static int get_charge_awake_state(struct bq2597x *bq)
 
 	return 0;
 }
-
+#endif
 
 
 static int bq2597x_charger_probe(struct i2c_client *client,
@@ -2419,12 +2419,13 @@ static int bq2597x_suspend(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	struct bq2597x *bq = i2c_get_clientdata(client);
+#if 0
 	int bq_charge_awake = 0;
 	bq_charge_awake = get_charge_awake_state(bq);
 	if(!!bq_charge_awake){
 		return -16;
 	}
-
+#endif 
 	mutex_lock(&bq->irq_complete);
 	bq->resume_completed = false;
 	mutex_unlock(&bq->irq_complete);
