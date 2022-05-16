@@ -2405,6 +2405,11 @@ static int bq2597x_suspend(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	struct bq2597x *bq = i2c_get_clientdata(client);
+	int bq_charge_awake = 0;
+	bq_charge_awake = get_charge_awake_state(bq);
+	if(!!bq_charge_awake){
+		return -16;
+	}
 
 	mutex_lock(&bq->irq_complete);
 	bq->resume_completed = false;
