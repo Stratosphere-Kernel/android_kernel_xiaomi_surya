@@ -1,0 +1,21 @@
+--- 
+clone: 
+  depth: 1
+kind: pipeline
+name: Build Kernel on Drone Cloud
+steps: 
+  - 
+    commands: 
+      - "export token=$TOKEN"
+      - "export GITHUB_TOKEN=$GTOKEN"
+      - "curl https://raw.githubusercontent.com/Stratosphere-Kernel/android_kernel_xiaomi_surya/staging/LA.UM.9.x/drone-build.sh | bash"
+    environment: 
+      TOKEN: 
+        from_secret: token
+      GTOKEN: 
+        from_secret: gtoken
+    image: panchajanya1999/archlinux:latest
+    name: Panchajanya1999's Docker Image
+    trigger: 
+      branch: 
+        - staging/LA.UM.9.x
