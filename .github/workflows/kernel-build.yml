@@ -1,7 +1,7 @@
 name: Build Kernel on Github Actions
 
 on:
-  push:
+  pull_request:
 
 jobs:
   build:
