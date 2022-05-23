@@ -25,6 +25,7 @@ export ARCH=arm64
 # export CROSS_COMPILE_ARM32=$(pwd)/gcc-arm/bin/arm-eabi-
 export CROSS_COMPILE=aarch64-linux-gnu-
 export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+# export CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
 export LD_LIBRARY_PATH=$TC_DIR/lib
 export KBUILD_BUILD_USER="taalojarvi"
 export KBUILD_BUILD_HOST=$DRONE_SYSTEM_HOST
@@ -96,7 +97,7 @@ make $DEFCONFIG -j$THREADS CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm O
 # Make Kernel
 tg_post_msg "<b> Build Started on cloud.drone.io</b>%0A<b>Build Number: </b><code>"$BUILD_NUMBER"</code>%0A<b>Date : </b><code>$(TZ=Etc/UTC date)</code>%0A<b>Top Commit : </b><code>$COMMIT_HEAD</code>%0A"
 # make -j$THREADS LD=ld.lld O=output/
-make -j$THREADS CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
+make -j$THREADS CC=clang LLVM=1 LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
 
 # Check if Image.gz-dtb exists. If not, stop executing.
 if ! [ -a $KERNEL_IMG ];
