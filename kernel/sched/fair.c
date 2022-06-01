@@ -7569,7 +7569,7 @@ static inline bool task_fits_max(struct task_struct *p, int cpu)
 	if (is_min_capacity_cpu(cpu)) {
 		if (task_boost_policy(p) == SCHED_BOOST_ON_BIG ||
 			task_boost > 0 ||
-			schedtune_task_boost(p) > 0 ||
+			schedtune_task_boost(p) > 0 && p->prio <= DEFAULT_PRIO ||
 			walt_should_kick_upmigrate(p, cpu))
 			return false;
 	} else { /* mid cap cpu */
@@ -8067,7 +8067,7 @@ static inline int find_best_target(struct task_struct *p, int *backup_cpu,
 		 */
 		if ((prefer_idle && best_idle_cpu != -1) ||
 		    (boosted && (best_idle_cpu != -1 || target_cpu != -1))) {
-			if (boosted) {
+			if (boosted && p->prio <= DEFAULT_PRIO) {
 				if (!next_group_higher_cap)
 					break;
 			} else {
@@ -8347,7 +8347,7 @@ static int find_energy_efficient_cpu(struct sched_domain *sd,
 	int placement_boost = task_boost_policy(p);
 	u64 start_t = 0;
 	int next_cpu = -1, backup_cpu = -1;
-	int boosted = (schedtune_task_boost(p) > 0 || per_task_boost(p) > 0);
+	int boosted = (schedtune_task_boost(p) > 0 && p->prio <= DEFAULT_PRIO || per_task_boost(p) > 0);
 	int start_cpu;
 	bool about_to_idle = (cpu_rq(cpu)->nr_running < 2);
 
