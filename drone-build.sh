@@ -3,7 +3,7 @@
 # Automation script for Building Kernels on Github Actions
 
 # Clone the repositories
-git clone --depth 1 https://gitlab.com/Panchajanya1999/azure-clang.git azure
+git clone --depth 1 -b Neutron-15 --single-branch https://gitlab.com/dakkshesh07/neutron-clang.git azure
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm64.git gcc-arm64
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm.git gcc-arm
 
@@ -45,11 +45,7 @@ CHATID=-1001719821334
 export BUILD_NUMBER=$((DRONE_BUILD_NUMBER + 215))
 COMMIT_HEAD=$(git log --oneline -1)
 TERM=xterm
-if [ "$(cat /sys/devices/system/cpu/smt/active)" = "1" ]; then
-		export THREADS=$(($(nproc --all) * 2))
-	else
-		export THREADS=$(nproc --all)
-	fi
+export THREADS=$(($(nproc --all) * 2))
 ##---------------------------------------------------------##
 
 tg_post_msg() {
@@ -124,7 +120,7 @@ tg_post_build "Stratosphere-$BUILD_NUMBER.zip" "Build took : $((DIFF / 60)) minu
 # curl -i -F files[]=@Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER".zip https://uguu.se/upload.php
 # curl -i -F files[]=@Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER".zip https://tmp.ninja/upload.php?output=text
 
-cp Stratosphere-$DRONE_BUILD_NUMBER.zip ../Stratosphere-Canaries/
+cp Stratosphere-$BUILD_NUMBER.zip ../Stratosphere-Canaries/
 cd ../Stratosphere-Canaries/
 
 # Upload Flashable Zip to GitHub Releases <3
