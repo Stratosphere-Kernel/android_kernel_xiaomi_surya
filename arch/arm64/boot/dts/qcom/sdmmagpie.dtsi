@@ -460,6 +460,7 @@
 
 	chosen {
 		bootargs = "rcupdate.rcu_expedited=1 rcu_nocbs=0-3 noirqdebug kpti=off nosoftlockup mce=ignore_ce mitigations=off cgroup.memory=nokmem,nosocket";
+		rng-seed = <0x12345678>;
 	};
 
 	soc: soc { };
