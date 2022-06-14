@@ -1082,7 +1082,7 @@ int usb_stor_probe2(struct us_data *us)
 	if (delay_use > 0)
 		dev_dbg(dev, "waiting for device to settle before scanning\n");
 	queue_delayed_work(system_freezable_wq, &us->scan_dwork,
-			delay_use * msecs_to_jiffies(1000));
+			delay_use * HZ);
 	return 0;
 
 	/* We come here if there are any problems */

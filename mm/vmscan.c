@@ -2001,7 +2001,7 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
 		 * they are written so also forcibly stall.
 		 */
 		if (stat.nr_immediate && current_may_throttle())
-			congestion_wait(BLK_RW_ASYNC, msecs_to_jiffies(100));
+			congestion_wait(BLK_RW_ASYNC, HZ/10);
 	}
 
 	/*
@@ -2011,7 +2011,7 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
 	 */
 	if (!sc->hibernation_mode && !current_is_kswapd() &&
 	    current_may_throttle())
-		wait_iff_congested(pgdat, BLK_RW_ASYNC, msecs_to_jiffies(100));
+		wait_iff_congested(pgdat, BLK_RW_ASYNC, HZ/10);
 
 	trace_mm_vmscan_lru_shrink_inactive(pgdat->node_id,
 			nr_scanned, nr_reclaimed,
@@ -3132,7 +3132,8 @@ static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
 	 */
 	if (!(gfp_mask & __GFP_FS)) {
 		wait_event_interruptible_timeout(pgdat->pfmemalloc_wait,
-			allow_direct_reclaim(pgdat, true), msecs_to_jiffies(1000));
+			allow_direct_reclaim(pgdat, true), HZ);
+
 		goto check_pending;
 	}
 
@@ -3597,7 +3598,7 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_o
 		 */
 		wakeup_kcompactd(pgdat, alloc_order, classzone_idx);
 
-		remaining = schedule_timeout(msecs_to_jiffies(100));
+		remaining = schedule_timeout(HZ/10);
 
 		/*
 		 * If woken prematurely then reset kswapd_classzone_idx and

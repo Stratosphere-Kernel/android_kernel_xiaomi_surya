@@ -803,7 +803,7 @@ void usb_hcd_poll_rh_status(struct usb_hcd *hcd)
 	 * fire at the same time to give the CPU a break in between */
 	if (hcd->uses_new_polling ? HCD_POLL_RH(hcd) :
 			(length == 0 && hcd->status_urb != NULL))
-		mod_timer (&hcd->rh_timer, (jiffies/(msecs_to_jiffies(250)) + 1) * (msecs_to_jiffies(250)));
+		mod_timer (&hcd->rh_timer, (jiffies/(HZ/4) + 1) * (HZ/4));
 }
 EXPORT_SYMBOL_GPL(usb_hcd_poll_rh_status);
 
@@ -835,7 +835,7 @@ static int rh_queue_status (struct usb_hcd *hcd, struct urb *urb)
 	hcd->status_urb = urb;
 	urb->hcpriv = hcd;	/* indicate it's queued */
 	if (!hcd->uses_new_polling)
-		mod_timer(&hcd->rh_timer, (jiffies/(msecs_to_jiffies(250)) + 1) * (msecs_to_jiffies(250)));
+		mod_timer(&hcd->rh_timer, (jiffies/(HZ/4) + 1) * (HZ/4));
 
 	/* If a status change has already occurred, report it ASAP */
 	else if (HCD_POLL_PENDING(hcd))

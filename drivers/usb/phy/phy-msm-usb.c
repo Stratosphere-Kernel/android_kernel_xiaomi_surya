@@ -2516,10 +2516,10 @@ static void msm_otg_set_mode_nondriving(struct msm_otg *motg,
 	clk_disable_unprepare(motg->xo_clk);
 }
 
-#define MSM_CHG_DCD_TIMEOUT		(750 * 100/1000) /* 750 msec */
-#define MSM_CHG_DCD_POLL_TIME		(50 * 100/1000) /* 50 msec */
-#define MSM_CHG_PRIMARY_DET_TIME	(50 * 100/1000) /* TVDPSRC_ON */
-#define MSM_CHG_SECONDARY_DET_TIME	(50 * 100/1000) /* TVDMSRC_ON */
+#define MSM_CHG_DCD_TIMEOUT		(750 * HZ/1000) /* 750 msec */
+#define MSM_CHG_DCD_POLL_TIME		(50 * HZ/1000) /* 50 msec */
+#define MSM_CHG_PRIMARY_DET_TIME	(50 * HZ/1000) /* TVDPSRC_ON */
+#define MSM_CHG_SECONDARY_DET_TIME	(50 * HZ/1000) /* TVDMSRC_ON */
 
 static void msm_chg_detect_work(struct work_struct *w)
 {

@@ -553,10 +553,10 @@ static void tty_port_drain_delay(struct tty_port *port, struct tty_struct *tty)
 	long timeout;
 
 	if (bps > 1200) {
-		timeout = (msecs_to_jiffies(1000) * 10 * port->drain_delay) / bps;
-		timeout = max_t(long, timeout, msecs_to_jiffies(100));
+		timeout = (HZ * 10 * port->drain_delay) / bps;
+		timeout = max_t(long, timeout, HZ / 10);
 	} else {
-		timeout = msecs_to_jiffies(2000);
+		timeout = 2 * HZ;
 	}
 	schedule_timeout_interruptible(timeout);
 }
