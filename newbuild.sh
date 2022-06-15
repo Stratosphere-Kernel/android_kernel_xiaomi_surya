@@ -25,7 +25,7 @@ DEFCONFIG=vendor/surya-perf_defconfig
 DATE=$(date +"%d-%m-%Y-%I-%M")
 SHORTDATE=$(date +"%d-%m-%Y")
 TIMESTAMP=$(date)
-LOG="Build"-$SHORTDATE
+LOG=last_log
 FINAL_ZIP=$KERNEL_NAME-$VERSION-$DATE.zip
 RELEASE_TAG=earlyaccess-$DATE
 
@@ -35,15 +35,15 @@ BASE_DIR=$HOME
 KERNEL_DIR=$(pwd)
 ANYKERNEL_DIR=$BASE_DIR/AnyKernel3
 UPLOAD_DIR=$BASE_DIR/Stratosphere-Canaries
+OUTPUT=$BASE_DIR/output
 TC_DIR=$BASE_DIR/azure-clang
 # TC_DIR=$BASE_DIR/gcc-arm64
 # TC_DIR_32=$BASE_DIR/gcc-arm
-LOG_DIR=$BASE_DIR/logs
+LOG_DIR=$OUTPUT
 CONFIG_DIR=$BASE_DIR/configs
 
 # Need not be edited
 RELEASE_NOTES=$UPLOAD_DIR/releasenotes.md
-OUTPUT=$BASE_DIR/output
 KERNEL_IMG=$OUTPUT/arch/arm64/boot/Image
 KERNEL_DTBO=$OUTPUT/arch/arm64/boot/dtbo.img
 KERNEL_DTB=$OUTPUT/arch/arm64/boot/dts/qcom/sdmmagpie.dtb
@@ -437,11 +437,9 @@ function update_repo()  {
 	echo -e " "
 	printf "\n$cyan Updating local repositories. Please wait\n$cyan"
 	if [ -d "$TC_DIR_32" ]; then
-		cd "$TC_DIR_32" && git pull origin --ff-only & cd "$TC_DIR" && git pull origin --ff-only & cd "$ANYKERNEL_DIR" && git pull https://github.com/osm0sis/AnyKernel3 master 
-		git push
+		cd "$TC_DIR_32" && git pull origin --ff-only & cd "$TC_DIR" && git pull origin --ff-only & cd "$ANYKERNEL_DIR" && git fetch https://github.com/osm0sis/AnyKernel3 master && git merge FETCH_HEAD && git push
 	else
-		cd "$TC_DIR" && git pull origin --ff-only & cd "$ANYKERNEL_DIR" && git pull https://github.com/osm0sis/AnyKernel3 master 
-		git push
+		cd "$TC_DIR" && git pull origin --ff-only & cd "$ANYKERNEL_DIR" && git fetch https://github.com/osm0sis/AnyKernel3 master && git merge FETCH_HEAD && git push
 	fi
 	
 	cd "$KERNEL_DIR" || exit
