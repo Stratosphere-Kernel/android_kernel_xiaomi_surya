@@ -3,12 +3,12 @@
 # Automation script for Building Kernels on Github Actions
 
 # Clone the repositories
-git clone --depth 1 -b Neutron-15 --single-branch https://gitlab.com/dakkshesh07/neutron-clang.git azure
+git clone --depth 1 -b Neutron-15 --single-branch https://gitlab.com/dakkshesh07/neutron-clang.git azure | exit 1
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm64.git gcc-arm64
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm.git gcc-arm
 
-git clone --depth 1 -b surya https://github.com/taalojarvi/AnyKernel3
-git clone --depth 1 https://github.com/Stratosphere-Kernel/Stratosphere-Canaries
+git clone --depth 1 -b surya https://github.com/taalojarvi/AnyKernel3 | exit 1
+# git clone --depth 1 https://github.com/Stratosphere-Kernel/Stratosphere-Canaries | exit 1
 
 # Workaround for safe.directory permission fix
 # git config --global safe.directory "$GITHUB_WORKSPACE"
