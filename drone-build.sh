@@ -73,6 +73,7 @@ tg_post_build() {
 ##----------------------------------------------------------##
 
 # Create Release Notes
+function releasenotes() {
 touch releasenotes.md
 echo -e "This is an Automated Build of Stratosphere Kernel. Flash at your own risk!" > releasenotes.md
 echo -e >> releasenotes.md
@@ -85,6 +86,7 @@ echo -e >> releasenotes.md
 echo -e "Last 5 Commits before Build:-" >> releasenotes.md
 git log --decorate=auto --pretty=reference --graph -n 10 >> releasenotes.md
 cp releasenotes.md $(pwd)/Stratosphere-Canaries/
+}
 
 # Make defconfig
 # make $DEFCONFIG LD=aarch64-elf-ld.lld O=output/
@@ -120,8 +122,8 @@ tg_post_build "Stratosphere-$BUILD_NUMBER.zip" "Build took : $((DIFF / 60)) minu
 # curl -i -F files[]=@Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER".zip https://uguu.se/upload.php
 # curl -i -F files[]=@Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER".zip https://tmp.ninja/upload.php?output=text
 
-cp Stratosphere-$BUILD_NUMBER.zip ../Stratosphere-Canaries/
-cd ../Stratosphere-Canaries/
+# cp Stratosphere-$BUILD_NUMBER.zip ../Stratosphere-Canaries/
+# cd ../Stratosphere-Canaries/
 
 # Upload Flashable Zip to GitHub Releases <3
 # gh release create earlyaccess-$DATE "Stratosphere-$BUILD_NUMBER.zip" -F releasenotes.md -p -t "Stratosphere Kernel: Automated Build" || echo "gh-cli encountered an unexpected error"
