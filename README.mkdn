@@ -1,3 +1,4 @@
+
 <img src="http://pre06.deviantart.net/ac5b/th/pre/i/2012/218/d/1/evening_victory_by_roen911-d5a019d.jpg">
 
 # Stratosphere Kernel 
@@ -20,6 +21,13 @@
 - Upstreamed WireGuard 
 - Removed a ton of debugging
 
+### Links
+[Telegram Group](https://bit.ly/StratosphereKernelHangar)
+
+[Telegram Channel](https://bit.ly/StratosphereBoarding)
+
+[Early Access Builds](https://bit.ly/StratospherePilots)
+
 ### Installation
 
 - Use Franco Kernel Manager to flash Kernel zip
@@ -28,9 +36,6 @@ Or
 
 ## Issues
 - Spotty Android Auto Compatibility [Reported/ Not Confirmed]
-
-## Download Links
-Check releases tab :-)
 
 Disclaimer : This custom kernel was developed with the intention of me learning Android Kernel development. Hence I do not market it as "stable". No warranties will be provided whatsoever and i cannot guarantee robust functionality. I claim no responsibility if my kernel permabricks your device. Please flash the kernel at your own risk.
 
