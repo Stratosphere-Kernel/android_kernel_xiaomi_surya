@@ -751,6 +751,9 @@ endif
 ifdef CONFIG_LLVM_POLLY
 KBUILD_CFLAGS	+= -mllvm -polly \
 		   -mllvm -polly-run-inliner \
+		   -mllvm -polly-reschedule=1 \
+		   -mllvm -polly-loopfusion-greedy=1 \
+		   -mllvm -polly-postopts=1 \
 		   -mllvm -polly-isl-arg=--no-schedule-serialize-sccs \
 		   -mllvm -polly-ast-use-context \
 		   -mllvm -polly-detect-keep-going \
