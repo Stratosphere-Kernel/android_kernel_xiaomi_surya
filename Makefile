@@ -754,6 +754,10 @@ KBUILD_CFLAGS	+= -mllvm -polly \
 		   -mllvm -polly-reschedule=1 \
 		   -mllvm -polly-loopfusion-greedy=1 \
 		   -mllvm -polly-postopts=1 \
+		   -mllvm -polly-num-threads=0 \
+	           -mllvm -polly-omp-backend=LLVM \
+		   -mllvm -polly-scheduling=dynamic \
+		   -mllvm -polly-scheduling-chunksize=1 \
 		   -mllvm -polly-isl-arg=--no-schedule-serialize-sccs \
 		   -mllvm -polly-ast-use-context \
 		   -mllvm -polly-detect-keep-going \
