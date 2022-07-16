@@ -437,9 +437,9 @@ function update_repo()  {
 	echo -e " "
 	printf "\n$cyan Updating local repositories. Please wait\n$cyan"
 	if [ -d "$TC_DIR_32" ]; then
-		cd "$TC_DIR_32" && git pull origin --ff-only & cd "$TC_DIR" && git pull origin --ff-only & cd "$ANYKERNEL_DIR" && git fetch https://github.com/osm0sis/AnyKernel3 master && git merge FETCH_HEAD && git push
+		cd "$TC_DIR_32" && git pull origin --ff-only & cd "$TC_DIR" && git pull origin --ff-only & cd "$ANYKERNEL_DIR" && git fetch https://github.com/osm0sis/AnyKernel3 master && git merge FETCH_HEAD && git push  && wait
 	else
-		cd "$TC_DIR" && git pull origin --ff-only & cd "$ANYKERNEL_DIR" && git fetch https://github.com/osm0sis/AnyKernel3 master && git merge FETCH_HEAD && git push
+		cd "$TC_DIR" && git pull origin --ff-only & cd "$ANYKERNEL_DIR" && git fetch https://github.com/osm0sis/AnyKernel3 master && git merge FETCH_HEAD && git push && wait
 	fi
 	
 	cd "$KERNEL_DIR" || exit
