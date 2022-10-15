@@ -3,10 +3,11 @@
 # Automation script for Building Kernels on Github Actions
 
 # Clone the repositories
-git clone --depth 1 https://gitlab.com/Panchajanya1999/azure-clang.git azure
+mkdir Neutron/
+curl -LJO https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/download/10102022/neutron-clang-10102022.tar.zst
+tar -xvf *.tar.zst -C Neutron/
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm64.git gcc-arm64
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm.git gcc-arm
-
 git clone --depth 1 -b surya https://github.com/taalojarvi/AnyKernel3
 git clone --depth 1 https://github.com/Stratosphere-Kernel/Stratosphere-Canaries
 
@@ -17,7 +18,7 @@ git config --global --add safe.directory /__w/android_kernel_xiaomi_surya/androi
 
 # Export Environment Variables. 
 export DATE=$(date +"%d-%m-%Y-%I-%M")
-export PATH="$(pwd)/azure/bin:$PATH"
+export PATH="$(pwd)/Neutron/bin:$PATH"
 # export PATH="$TC_DIR/bin:$HOME/gcc-arm/bin${PATH}"
 export CLANG_TRIPLE=aarch64-linux-gnu-
 export ARCH=arm64
@@ -118,7 +119,7 @@ cp UPDATE-AnyKernel2.zip package.zip
 cp UPDATE-AnyKernel2.zip Stratosphere-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER.zip
 BUILD_END=$(date +"%s")
 DIFF=$((BUILD_END - BUILD_START))
-tg_post_build "Stratosphere-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER.zip" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+tg_post_build "Stratosphere-GitHub-$GITHUB_RUN_NUMBER.zip" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 
 
 # Upload Flashable zip to tmp.ninja and uguu.se

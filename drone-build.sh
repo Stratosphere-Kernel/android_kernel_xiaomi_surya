@@ -3,10 +3,11 @@
 # Automation script for Building Kernels on Github Actions
 
 # Clone the repositories
-git clone --depth 1 -b Neutron-15 --single-branch https://gitlab.com/dakkshesh07/neutron-clang.git azure | exit 1
+mkdir Neutron/
+curl -LJO https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/download/10102022/neutron-clang-10102022.tar.zst
+tar -xvf *.tar.zst -C Neutron/
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm64.git gcc-arm64
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm.git gcc-arm
-
 git clone --depth 1 -b surya https://github.com/taalojarvi/AnyKernel3 | exit 1
 # git clone --depth 1 https://github.com/Stratosphere-Kernel/Stratosphere-Canaries | exit 1
 
@@ -17,7 +18,7 @@ git clone --depth 1 -b surya https://github.com/taalojarvi/AnyKernel3 | exit 1
 
 # Export Environment Variables. 
 export DATE=$(date +"%d-%m-%Y-%I-%M")
-export PATH="$(pwd)/azure/bin:$PATH"
+export PATH="$(pwd)/Neutron/bin:$PATH"
 # export PATH="$TC_DIR/bin:$HOME/gcc-arm/bin${PATH}"
 export CLANG_TRIPLE=aarch64-linux-gnu-
 export ARCH=arm64
