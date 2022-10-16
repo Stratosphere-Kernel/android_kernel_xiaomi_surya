@@ -430,7 +430,7 @@ static void __filemap_fdatawait_range(struct address_space *mapping,
 	if (end_byte < start_byte)
 		return;
 
-	pagevec_init(&pvec);
+	pagevec_init(&pvec, 0);
 	while (index <= end) {
 		unsigned i;
 
