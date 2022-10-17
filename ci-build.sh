@@ -5,10 +5,10 @@
 # Clone the repositories
 mkdir Neutron/
 curl -LJO https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/download/10102022/neutron-clang-10102022.tar.zst
-tar -xvf *.tar.zst -C Neutron/
+tar -xf *.tar.zst -C Neutron/
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm64.git gcc-arm64
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm.git gcc-arm
-git clone --depth 1 -b surya https://github.com/taalojarvi/AnyKernel3
+git clone --depth 1 -b surya https://github.com/taalojarvi/AnyKernel3 
 git clone --depth 1 https://github.com/Stratosphere-Kernel/Stratosphere-Canaries
 
 # Workaround for safe.directory permission fix
@@ -36,6 +36,7 @@ export KERNEL_DTBO=output/arch/arm64/boot/dtbo.img
 export KERNEL_DTB=output/arch/arm64/boot/dts/qcom/sdmmagpie.dtb
 export DEFCONFIG=vendor/surya-perf_defconfig
 export ANYKERNEL_DIR=$(pwd)/AnyKernel3/
+export BUILD_NUMBER=$((GITHUB_RUN_NUMBER + 93))
 
 # Telegram API Stuff
 BUILD_START=$(date +"%s")
@@ -97,7 +98,7 @@ cp releasenotes.md $(pwd)/Stratosphere-Canaries/
 make $DEFCONFIG -j$THREADS CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
 
 # Make Kernel
-tg_post_msg "<b> Build Started on Github Actions</b>%0A<b>Build Number: </b><code>"$GITHUB_RUN_NUMBER"</code>%0A<b>Date : </b><code>$(TZ=Etc/UTC date)</code>%0A<b>Top Commit : </b><code>$COMMIT_HEAD</code>%0A"
+tg_post_msg "<b> Build Started on Github Actions</b>%0A<b>Build Number: </b><code>"$BUILD_NUMBER"</code>%0A<b>Date : </b><code>$(TZ=Etc/UTC date)</code>%0A<b>Top Commit : </b><code>$COMMIT_HEAD</code>%0A"
 # make -j$THREADS LD=ld.lld O=output/
 make -j$THREADS CC=clang LLVM=1 LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
 
@@ -111,23 +112,24 @@ if ! [ -a $KERNEL_IMG ];
 
 # Make Flashable Zip
 cp "$KERNEL_IMG" "$ANYKERNEL_DIR"
-cp "$KERNEL_DTB" "$ANYKERNEL_DIR"/dtb
-cp "$KERNEL_DTBO" "$ANYKERNEL_DIR"
+cp "$KERNEL_DTB" "$ANYKERNEL_DIR"/dtb 
+cp "$KERNEL_DTBO" "$ANYKERNEL_DIR" 
 cd AnyKernel3
 zip -r9 UPDATE-AnyKernel2.zip * -x README.md LICENSE UPDATE-AnyKernel2.zip zipsigner.jar
-cp UPDATE-AnyKernel2.zip package.zip
-cp UPDATE-AnyKernel2.zip Stratosphere-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER.zip
+cp UPDATE-AnyKernel2.zip package.zip 
+curl -sLo zipsigner-3.0.jar https://github.com/Magisk-Modules-Repo/zipsigner/raw/master/bin/zipsigner-3.0-dexed.jar
+java -jar zipsigner-3.0.jar UPDATE-AnyKernel2.zip Stratosphere-$BUILD_NUMBER.zip
 BUILD_END=$(date +"%s")
 DIFF=$((BUILD_END - BUILD_START))
-tg_post_build "Stratosphere-GitHub-$GITHUB_RUN_NUMBER.zip" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+tg_post_build "Stratosphere-$BUILD_NUMBER.zip" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 
 
 # Upload Flashable zip to tmp.ninja and uguu.se
-# curl -i -F files[]=@Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER".zip https://uguu.se/upload.php
-# curl -i -F files[]=@Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER".zip https://tmp.ninja/upload.php?output=text
+# curl -i -F files[]=@Stratosphere-"$BUILD_NUMBER".zip https://uguu.se/upload.php
+# curl -i -F files[]=@Stratosphere-"$BUILD_NUMBER".zip https://tmp.ninja/upload.php?output=text
 
-cp Stratosphere-$GITHUB_RUN_ID-$GITHUB_RUN_NUMBER.zip ../Stratosphere-Canaries/
+cp Stratosphere-"$BUILD_NUMBER".zip ../Stratosphere-Canaries/
 cd ../Stratosphere-Canaries/
 
 # Upload Flashable Zip to GitHub Releases <3
-gh release create earlyaccess-$DATE "Stratosphere-"$GITHUB_RUN_ID"-"$GITHUB_RUN_NUMBER.zip"" -F releasenotes.md -p -t "Stratosphere Kernel: Automated Build" || echo "gh-cli encountered an unexpected error"
+gh release create earlyaccess-$DATE "Stratosphere-""$BUILD_NUMBER"".zip" -F releasenotes.md -p -t "Stratosphere Kernel: Automated Build" || echo "gh-cli encountered an unexpected error"
