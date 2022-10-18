@@ -2,6 +2,7 @@
 name: Build Kernel on Github Actions
 
 on:
+  push:
   workflow_dispatch:
 
 jobs:
