@@ -306,7 +306,7 @@ static irqreturn_t qcom_smp2p_isr(int irq, void *data)
 {
 	struct qcom_smp2p *smp2p = data;
 
-	__pm_wakeup_event(smp2p->ws, 500);
+	__pm_stay_awake(smp2p->ws);
 	return IRQ_WAKE_THREAD;
 }
 
