@@ -112,3 +112,4 @@ obj-$(CONFIG_TOUCHSCREEN_RAYDIUM_CHIPSET)  += raydium_wt030/
 obj-$(CONFIG_TOUCHSCREEN_COMMON)	+= lct_tp_palm.o lct_tp_info.o lct_tp_selftest.o lct_tp_gesture.o lct_tp_grip_area.o lct_tp_work.o
 obj-$(CONFIG_TOUCHSCREEN_NT36xxx_HOSTDL_SPI)	+= nt36xxx_spi/
 obj-$(CONFIG_TOUCHSCREEN_XIAOMI_TOUCHFEATURE)   += xiaomi/
+obj-$(CONFIG_TOUCHSCREEN_SYSFS)	+= tp_common.o

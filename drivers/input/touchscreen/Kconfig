@@ -1301,6 +1301,15 @@ config TOUCHSCREEN_COMMON
 	default y
 	help
 	  Say Y here if you have lct tp info connected.
+	  
+	  If unsure, say N.
+
+config TOUCHSCREEN_SYSFS
+	bool "Common touchscreen interface to interact with userspace"
+	default y
+	help
+	  Say Y here if you want to control touchpanel features via
+	  /sys/touchpanel.
 
 	  If unsure, say N.
 
