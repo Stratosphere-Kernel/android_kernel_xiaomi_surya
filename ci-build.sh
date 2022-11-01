@@ -115,6 +115,11 @@ cp "$KERNEL_IMG" "$ANYKERNEL_DIR"
 cp "$KERNEL_DTB" "$ANYKERNEL_DIR"/dtb 
 cp "$KERNEL_DTBO" "$ANYKERNEL_DIR" 
 cd AnyKernel3
+# Add a fortune to the banner
+if [ -x "$(command -v fortune)" ]; then
+	printf "\n" >> banner
+	fortune -n "$BUILD_NUMBER" >> banner
+fi
 zip -r9 UPDATE-AnyKernel2.zip * -x README.md LICENSE UPDATE-AnyKernel2.zip zipsigner.jar
 cp UPDATE-AnyKernel2.zip package.zip 
 curl -sLo zipsigner-3.0.jar https://github.com/Magisk-Modules-Repo/zipsigner/raw/master/bin/zipsigner-3.0-dexed.jar
