@@ -4,7 +4,7 @@
 
 # Clone the repositories
 mkdir Neutron/
-curl -LJO https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/download/10102022/neutron-clang-10102022.tar.zst
+curl -LJO https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/download/26112022/neutron-clang-26112022.tar.zst
 tar -xf *.tar.zst -C Neutron/
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm64.git gcc-arm64
 # git clone --depth 1 -b gcc-master https://github.com/mvaisakh/gcc-arm.git gcc-arm
