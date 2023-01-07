@@ -36,7 +36,7 @@ export KERNEL_DTBO=output/arch/arm64/boot/dtbo.img
 export KERNEL_DTB=output/arch/arm64/boot/dts/qcom/sdmmagpie.dtb
 export DEFCONFIG=vendor/surya-perf_defconfig
 export ANYKERNEL_DIR=$(pwd)/AnyKernel3/
-export BUILD_NUMBER=$((GITHUB_RUN_NUMBER + 93))
+export BUILD_NUMBER=$((GITHUB_RUN_NUMBER + 344))
 
 # Telegram API Stuff
 BUILD_START=$(date +"%s")
