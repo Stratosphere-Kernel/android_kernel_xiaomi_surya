@@ -14,7 +14,7 @@ git clone --depth 1 https://github.com/Stratosphere-Kernel/Stratosphere-Canaries
 # Workaround for safe.directory permission fix
 git config --global safe.directory "$GITHUB_WORKSPACE"
 git config --global safe.directory /github/workspace
-git config --global --add safe.directory /__w/android_kernel_xiaomi_surya/android_kernel_xiaomi_surya
+git config --global --add safe.directory /__w/kernel_xiaomi_surya/android_kernel_xiaomi_surya
 
 # Export Environment Variables. 
 export DATE=$(date +"%d-%m-%Y-%I-%M")
@@ -34,7 +34,7 @@ export USE_HOST_LEX=yes
 export KERNEL_IMG=output/arch/arm64/boot/Image
 export KERNEL_DTBO=output/arch/arm64/boot/dtbo.img
 export KERNEL_DTB=output/arch/arm64/boot/dts/qcom/sdmmagpie.dtb
-export DEFCONFIG=vendor/surya-perf_defconfig
+export DEFCONFIG=surya_defconfig
 export ANYKERNEL_DIR=$(pwd)/AnyKernel3/
 export BUILD_NUMBER=$((GITHUB_RUN_NUMBER + 344))
 
