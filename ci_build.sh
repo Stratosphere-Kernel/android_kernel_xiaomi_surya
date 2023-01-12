@@ -18,7 +18,7 @@ git clone --depth 1 https://github.com/Stratosphere-Kernel/Stratosphere-Canaries
 # Workaround for safe.directory permission fix
 git config --global safe.directory "$GITHUB_WORKSPACE"
 git config --global safe.directory /github/workspace
-git config --global --add safe.directory /__w/kernel_xiaomi_surya/android_kernel_xiaomi_surya
+git config --global --add safe.directory /__w/kernel_xiaomi_surya/kernel_xiaomi_surya
 
 # Export Environment Variables. 
 export DATE=$(date +"%d-%m-%Y-%I-%M")
@@ -44,8 +44,6 @@ export BUILD_NUMBER=$((GITHUB_RUN_NUMBER + 344))
 
 # Telegram API Stuff
 BUILD_START=$(date +"%s")
-export GITHUB_TOKEN=$TOKEN
-export token=$TGKEN
 KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 BOT_MSG_URL="https://api.telegram.org/bot$token/sendMessage"
 BOT_BUILD_URL="https://api.telegram.org/bot$token/sendDocument"
@@ -141,4 +139,4 @@ cp Stratosphere-"$BUILD_NUMBER".zip ../Stratosphere-Canaries/
 cd ../Stratosphere-Canaries/
 
 # Upload Flashable Zip to GitHub Releases <3
-gh release create earlyaccess-$DATE "Stratosphere-""$BUILD_NUMBER"".zip" -F releasenotes.md -p -t "Stratosphere Kernel: Automated Build" || echo "gh-cli encountered an unexpected error"
+# gh release create earlyaccess-$DATE "Stratosphere-""$BUILD_NUMBER"".zip" -F releasenotes.md -p -t "Stratosphere Kernel: Automated Build" || echo "gh-cli encountered an unexpected error"
