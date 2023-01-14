@@ -10,8 +10,8 @@ jobs:
     steps:
       - name: Test if the Telegram bot is set up correctly
         run: |
-          export BOT_TEST_URL="https://api.telegram.org/bot$RELEASE_TOKEN/getMe" 
+          export BOT_TEST_URL="https://api.telegram.org/bot$token/getMe" 
           curl -s -X POST "$BOT_TEST_URL" || echo -e "Failure"
         env:
-          RELEASE_TOKEN: ${{ secrets.TG_TOKEN }}
+          token: ${{ secrets.TG_TOKEN }}
 

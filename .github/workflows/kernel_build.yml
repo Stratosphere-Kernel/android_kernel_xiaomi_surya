@@ -17,10 +17,9 @@ jobs:
         run: pacman -Syu --needed --noconfirm wget base-devel xmlto inetutils bc cpio python-sphinx python-sphinx_rtd_theme graphviz imagemagick git python zip github-cli fortune-mod
       - name: Build Stratosphere Kernel
         run: |
-          export token=${TELEGRAM_TOKEN}
           bash ci_build.sh
         env:
-          TELEGRAM_TOKEN: ${{ secrets.TG_TOKEN }}
+          token: ${{ secrets.TG_TOKEN }}
       - name: Store Kernel Package as Artifact
         uses: actions/upload-artifact@v3
         with:
