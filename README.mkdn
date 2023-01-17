@@ -1,0 +1,59 @@
+
+<img src="http://pre06.deviantart.net/ac5b/th/pre/i/2012/218/d/1/evening_victory_by_roen911-d5a019d.jpg">
+
+# Stratosphere Kernel 
+
+##### Custom Kernel for Xiaomi Poco X3/NFC [Surya/Karna]
+
+[![Build Status](https://cloud.drone.io/api/badges/Stratosphere-Kernel/android_kernel_xiaomi_surya/status.svg?ref=refs/heads/staging/LA.UM.9.x)](https://cloud.drone.io/Stratosphere-Kernel/android_kernel_xiaomi_surya)
+
+### Features
+
+- Compiled with Azure-Clang
+- Based on QuickSilver source
+- EAS-PELT
+- Upstreamed Linux
+- Backported zSTD patches
+- Backported zRAM patches
+- Backported TCP patches
+- Upstreamed CLO Merges
+- Upstreamed QCACLD-3.0
+- Upstreamed WireGuard 
+- Removed a ton of debugging
+
+### Links
+[Telegram Group](https://bit.ly/StratosphereKernelHangar)
+
+[Telegram Channel](https://bit.ly/StratosphereBoarding)
+
+[Early Access Builds](https://bit.ly/StratospherePilots)
+
+### Installation
+
+- Use Franco Kernel Manager to flash Kernel zip
+Or
+- Use TWRP to flash zip
+
+## Issues
+- Spotty Android Auto Compatibility [Reported/ Not Confirmed]
+
+Disclaimer : This custom kernel was developed with the intention of me learning Android Kernel development. Hence I do not market it as "stable". No warranties will be provided whatsoever and i cannot guarantee robust functionality. I claim no responsibility if my kernel permabricks your device. Please flash the kernel at your own risk.
+
+Linux kernel
+============
+
+This file was moved to Documentation/admin-guide/README.rst
+
+Please notice that there are several guides for kernel developers and users.
+These guides can be rendered in a number of formats, like HTML and PDF.
+
+In order to build the documentation, use ``make htmldocs`` or
+``make pdfdocs``.
+
+There are various text files in the Documentation/ subdirectory,
+several of them using the Restructured Text markup notation.
+See Documentation/00-INDEX for a list of what is contained in each file.
+
+Please read the Documentation/process/changes.rst file, as it contains the
+requirements for building and running the kernel, and information about
+the problems which may result by upgrading your kernel.
