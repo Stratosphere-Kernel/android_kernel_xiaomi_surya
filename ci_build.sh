@@ -41,6 +41,7 @@ export KERNEL_DTB=output/arch/arm64/boot/dts/qcom/sdmmagpie.dtb
 export DEFCONFIG=surya_defconfig
 export ANYKERNEL_DIR=$(pwd)/AnyKernel3/
 export BUILD_NUMBER=$((GITHUB_RUN_NUMBER + 344))
+export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
 
 # Telegram API Stuff
 BUILD_START=$(date +"%s")
@@ -102,7 +103,7 @@ make $DEFCONFIG -j$THREADS CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm O
 # Make Kernel
 tg_post_msg "<b> Build Started on Github Actions</b>%0A<b>Build Number: </b><code>"$BUILD_NUMBER"</code>%0A<b>Date : </b><code>$(TZ=Etc/UTC date)</code>%0A<b>Top Commit : </b><code>$COMMIT_HEAD</code>%0A"
 # make -j$THREADS LD=ld.lld O=output/
-make -j$THREADS CC=clang LLVM=1 LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
+make -j$THREADS CC='ccache clang -Qunused-arguments -fcolor-diagnostics' LLVM=1 LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip O=output/
 
 # Check if Image.gz-dtb exists. If not, stop executing.
 if ! [ -a $KERNEL_IMG ];
