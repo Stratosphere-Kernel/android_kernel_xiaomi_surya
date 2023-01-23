@@ -17,6 +17,8 @@ jobs:
         run: pacman -Syu --needed --noconfirm wget base-devel xmlto inetutils bc cpio python-sphinx python-sphinx_rtd_theme graphviz imagemagick git python zip github-cli fortune-mod ccache
       - name: Initialize ccache
         uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: 2048M
       - name: Build Stratosphere Kernel
         run: |
           bash ci_build.sh
