@@ -5,19 +5,16 @@
 
 ##### Custom Kernel for Xiaomi Poco X3/NFC [Surya/Karna]
 
-[![Build Status](https://cloud.drone.io/api/badges/Stratosphere-Kernel/android_kernel_xiaomi_surya/status.svg?ref=refs/heads/staging/LA.UM.9.x)](https://cloud.drone.io/Stratosphere-Kernel/android_kernel_xiaomi_surya)
+[![Build Kernel on Github Actions](https://github.com/Stratosphere-Kernel/kernel_xiaomi_surya/actions/workflows/kernel_build.yml/badge.svg)](https://github.com/Stratosphere-Kernel/kernel_xiaomi_surya/actions/workflows/kernel_build.yml)
 
 ### Features
 
-- Compiled with Azure-Clang
-- Based on QuickSilver source
-- EAS-PELT
+- Compiled with Neutron Clang 17
+- Based on Kennyf3cb source
 - Upstreamed Linux
 - Backported zSTD patches
 - Backported zRAM patches
 - Backported TCP patches
-- Upstreamed CLO Merges
-- Upstreamed QCACLD-3.0
 - Upstreamed WireGuard 
 - Removed a ton of debugging
 
@@ -31,13 +28,16 @@
 ### Installation
 
 - Use Franco Kernel Manager to flash Kernel zip
-Or
+
+or
+
 - Use TWRP to flash zip
 
 ## Issues
-- Spotty Android Auto Compatibility [Reported/ Not Confirmed]
+Report it to me on the [Telegram Group](https://bit.ly/StratosphereKernelHangar) or on [Issues](https://github.com/Stratosphere-Kernel/kernel_xiaomi_surya/issues) with logs and a short description of the issue.
 
-Disclaimer : This custom kernel was developed with the intention of me learning Android Kernel development. Hence I do not market it as "stable". No warranties will be provided whatsoever and i cannot guarantee robust functionality. I claim no responsibility if my kernel permabricks your device. Please flash the kernel at your own risk.
+## Disclaimer
+This custom kernel was developed with the intention of me learning Android Kernel development. Hence I do not market it as "stable". No warranties will be provided whatsoever and i cannot guarantee robust functionality. I claim no responsibility if my kernel permabricks your device. Please flash the kernel at your own risk.
 
 Linux kernel
 ============
