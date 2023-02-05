@@ -1,0 +1,13 @@
+ {
+  "kernel": {
+    "name": "Stratosphere Kernel",
+    "version": "7",
+    "link": "https://github.com/Stratosphere-Kernel/android_kernel_xiaomi_surya/releases/download/Milestone-7/Stratosphere-306.zip",
+    "changelog_url": "https://raw.githubusercontent.com/Stratosphere-Kernel/android_kernel_xiaomi_surya/staging/LA.UM.9.x/FKM/changelog",
+    "date": "2022-07-01",
+    "sha1": "7b90ba612990cc6b46b3dba908c2b1a259ab58c2"
+  },
+  "support": {
+    "link": "https://t.me/StratosphereKernelHangar"
+  }
+}
