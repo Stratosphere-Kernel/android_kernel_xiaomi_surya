@@ -12,7 +12,7 @@ jobs:
     container:
       image: panchajanya1999/archlinux:latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup env
         run: pacman -Syu --needed --noconfirm wget base-devel xmlto inetutils bc cpio python-sphinx python-sphinx_rtd_theme graphviz imagemagick git python zip github-cli fortune-mod ccache
       - name: Initialize ccache
