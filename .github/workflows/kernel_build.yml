@@ -25,7 +25,7 @@ jobs:
         env:
           token: ${{ secrets.TG_TOKEN }}
       - name: Store Kernel Package as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
          name: Flashable zip
          path: AnyKernel3/package.zip
